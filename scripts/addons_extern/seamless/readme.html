@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Piles'N'Tiles 0.1</title>
+	<style>
+html, body, h1, h2, h3, h4, h5, h6, div, p
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background-color: transparent;
+}
+
+html, body
+{
+	width: 100%;
+	height: auto;
+	min-height: 100%;
+}
+
+body
+{
+	color: #d0d0d0;
+	font-size: 10pt;
+	font-family: verdana, geneva, tahoma, sans-serif;
+	background: #4d4d4d url('doc/bg_a.jpg') repeat fixed;
+	text-align: left;
+	padding-top: 16px;
+}
+
+#content
+{
+	width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.frame
+{
+	background: url('doc/bg_c.png') no-repeat scroll, #2b2b2b url('doc/bg_b.jpg') repeat fixed;
+	text-align: center;
+	margin-bottom: 16px;
+	border-radius: 8px;
+	border: 1px solid #1e1e1e;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.91);
+	padding: 4px;
+	overflow: hidden;
+}
+
+.subframe
+{
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAEAQMAAACTPww9AAAABlBMVEX///8qKirUyBW2AAAAAXRSTlMAQObYZgAAABBJREFUGFdjUGBgYGhgYAAAAmgAoSswDdcAAAAASUVORK5CYII=');
+	background-repeat: repeat;
+	background-attachment: scroll;
+	background-color: rgba(100, 100, 100, 0.50);
+	border: 1px solid rgb(100, 100, 100);
+	border-radius: 4px;
+	padding: 4px;
+}
+
+.subsec
+{
+	margin-bottom: 32px;
+	overflow: hidden;
+}
+
+.labelcontent
+{
+	padding-left: 200px;
+	clear: both;
+}
+
+.imggroup
+{
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAxIAAAABCAMAAAB9sGhRAAAA6lBMVEWbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5v///9YmdCwAAAATnRSTlMCS0wBSAUIRUlKBANCCzsSRwZECUYHDj9BGwxNKDU4KxVDGDIeCi8iD0AlEA09OScUPjM3GRwgFjwTMSQaETY6NBcdLTAjLiEsHyopJgCDrhYmAAAAm0lEQVR4Xm3AA5IDARAF0Ni2bWtt+/7XSdX2b8xUnqcufG7eE6JWxAq4ZFRBhR1yqisSRkVMWVlt2ZJdQsp4gBVriT3cQ1M8wg764hpeYSTeyQt8krb4Jj+kIdbsl8zYDbyRsfgg5/BFBuIZzqAqbuEAPfEEF9ARG3YFaeMO5mzCSmrBaiJpDEVehRyKKquCLjErbnlO8Lv9/TsCu9Bk4aC/PTwAAAAASUVORK5CYII=') repeat-y left;
+	margin: 0 4px 16px;
+	padding: 8px;
+	border-radius: 4px;
+}
+
+.labelbox
+{
+	position: absolute;
+	top: 4px;
+	right: 100%;
+}
+
+.sflabel
+{
+	background-color: rgba(123, 181, 101, 0.50);
+	background-image: none;
+	border-color: #7fbb6a;
+}
+
+.fleft
+{
+	margin: 8px 8px 8px 0;
+	float: left;
+}
+
+.fright
+{
+	margin: 8px 0 8px 8px;
+	float: right;
+}
+
+.label
+{
+	color: #acff8f;
+	text-shadow: #111 0 1px 0, #111 0 -1px 0, #111 1px 0 0, #111 -1px 0 0, #111 1px 1px 0, #111 1px -1px 0, #111 -1px 1px 0, #111 -1px -1px 0;
+}
+
+.searchterm
+{
+	color: #fff;
+	border: 1px solid rgb(20, 20, 20);
+	border-radius: 4px;
+	padding: 1px 4px 1px 18px;
+	font-size: 8pt;
+	white-space: nowrap;
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABa1BMVEX///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKHyoLHCcAAAACAgIAAAALISsAAAAAAAABAQFhYWHKysozMzPPz881NTWHgHp3d3doaGXT09NTT0c5OTnq6uqGhIDo5d9GPDNzZU0BAQHx7+ySkpKJmZy2trbDyczq5+NeUkHIyMhWSjV1Zk2HiYBmXk+lw8emz9S+2d3///+EhnxhXVpsaFyIoZyhxMi33eGv4ufQ8vb39/eLi4ttbW3MzMw7RUqBqrCgz9Wr4uqq7vf6//+srKwAAAAAAAA2Nja4uLjo6OjEzc2v193W9Pn2/v/x8fEEBAS6uroOIi9banU2NjaVlZXx8fH+/v74+PisrKwDAwOUlJQfNUPu6+haanUABgaJp6ofNUPs7OwAAAALHCoMHiofNkSZrqwOJTQOHSsOJjUQJjgOJjUMHCgPJzcOIi8MHiltnb0nZI2ivM6nwNHMzMwoZo88eqVBgKmht26DAAAAcXRSTlMAx8PmhzoPEIgxLg3Z7TCKhdudc4iah3FcUYREMZBw0FBq2tVsX4FVyk9zVlloZHxwU+ZjT1BnfZmCd9Wuln00V3ODeMS7AjX0uJBWWXfJz9p93/31qMTs2rnbafDW/ixU778oyivude+w7tXtQMzKLFCoGP4AAAC7SURBVCjPY2SAALZ//xj/8/3+ysAI4bPKfhJ4L/zml/VOiAA7FzubwKefjL+//4cIcPAxcnAyfmJklL8CEWCMOmZzTOCT9XHrBRABXllGRkarE0DiIlRFwGNGCDgOEeDXg/IZ94MF3GSfwgS2gQQ4PRmV7kP4q38DBfj8xFmfMW74xPOF/f9PoEu5woX/sr6bA/UCA2MqI99fxm8Lv8MFMrn+Mf5Y8okBLpDN8/vXvG8MCIFcoNkTEHwGAG1ANj06tMhKAAAAAElFTkSuQmCC') no-repeat #2b2b2b;
+}
+
+p
+{
+	text-align: left;
+	margin: 4px 4px 12px 4px;
+}
+
+p i
+{
+	color: #ff3ae3;
+}
+
+#pageheader
+{
+	width: auto;
+	height: 45px;
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAECAQAAADLnSlPAAAAZUlEQVR4Xu2RSwrAMAhErRfplXr/fy8y0yEUJBRTstYs8njRBI3HRdO67bRtUuQg5Xxdu5zhERe5QUyOOF8SUz7GfXxdxDKOJE++8W5SX86873/m/57OyTzGWpFNr91+02u333wAUPjVSbalUQgAAAAASUVORK5CYII=') left repeat-y, url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAECAQAAADLnSlPAAAAYUlEQVR4Xu3RSwoAMQgD0CQXmSvN/f+9yYRuigwiXevqkVpBW74EwIWHILBonS2cefKpW16okBXOcxXua/frn63Sesyq+vJ6MV+w2rs2f/f0n7CFxa06saOjeq8/qvf64weFLAFHi6qN0gAAAABJRU5ErkJggg==')  right repeat-y, url('doc/phys.gif') center repeat;
+	border: 1px solid #777;
+	border-radius: 4px;
+	text-align: center;
+	position: relative;
+}
+
+b
+{
+	color: #e5e5e5;
+	text-shadow: #222 0 1px 0, #222 0 -1px 0, #222 1px 0 0, #222 -1px 0 0, #222 1px 1px 0, #222 1px -1px 0, #222 -1px 1px 0, #222 -1px -1px 0;
+}
+
+strong
+{
+	font-weight: normal;
+	text-decoration: none;
+	font-style: normal;
+	color: #ff9b9e;
+}
+
+.warn
+{
+	border: 1px solid #606060;
+	border-radius: 4px;
+	padding: 4px;
+	background-color: rgb(74, 56, 36);
+	font-style: italic;
+}
+
+.tech
+{
+	border: 1px solid #606060;
+	border-radius: 4px;
+	padding: 4px;
+	margin: 8px 0;
+	background-color: rgba(36, 46, 74, 0.50);
+}
+
+.tech b
+{
+	color: #ffefc2;
+}
+
+.tech i
+{
+	color: #e1c0ff;
+}
+
+.warn b
+{
+	font-weight: bold;
+	text-shadow: #111 0 1px 0, #111 0 -1px 0, #111 1px 0 0, #111 -1px 0 0, #111 1px 1px 0, #111 1px -1px 0, #111 -1px 1px 0, #111 -1px -1px 0;
+	color: #ff9c00;
+	font-style: normal;
+}
+
+h1
+{
+	font-family: georgia, cambria, cochin, times, times new roman, serif;
+	font-weight: normal;
+	font-size: 22pt;
+	text-align: center;
+	color: #ffe7bc;
+	text-shadow: #111 0 1px 0, #111 0 -1px 0, #111 1px 0 0, #111 -1px 0 0, #111 1px 1px 0, #111 1px -1px 0, #111 -1px 1px 0, #111 -1px -1px 0;
+}
+
+#pageheader h1
+{
+	font-size: 28pt;
+	line-height: 45px;
+}
+
+h2
+{
+	font-size: 12pt;
+	color: #fff;
+	text-shadow: #111 0 1px 0, #111 0 -1px 0, #111 1px 0 0, #111 -1px 0 0, #111 1px 1px 0, #111 1px -1px 0, #111 -1px 1px 0, #111 -1px -1px 0;
+	text-align: left;
+	line-height: 20px;
+	padding: 0 48px;
+	height: 21px;
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAAVCAQAAAB88JdxAAABAElEQVR4Xu3YMUoDQRQG4D9xW0Ns0toocwUPEHvvYx9yKA/gEdzSG4i1EkEJqcIsrAjyvi3mm32zzVuYYfgXD2m32WebVY7P4TTrVDr2qufHo9PH6Wu/NZv+1q/0qv3V+V/z7/55r9qv9N/mzubssfn7u3+GTPVcZf89G1o7PI/rIZ9JXnOdFJAkk2SZ3bheFDr+SPJ0AG6HYu2T5PEAXFW8/ZFksizbPkkZYN32ScoAy/4GkjLAf9cGScoASVIGSJIyQJKUAZKkDJAkZYAkKQMkSRkgSRng+0XR9knKAJ8+irZPUgb42N6uUu8WSFIGOIwv7W6z29zfXP4UWmpIkl9T7/Ie+M9rIwAAAABJRU5ErkJggg==') left no-repeat;
+	position: relative;
+}
+
+h2 span
+{
+	position: absolute;
+	right: 0;
+	font-size: 8pt;
+	color: #b1b1b1;
+	text-shadow: none;
+	padding: 0 16px;
+}
+
+h2 b
+{
+	font-size: 8pt;
+	font-weight: bold;
+	text-shadow: #111 0 1px 0, #111 0 -1px 0, #111 1px 0 0, #111 -1px 0 0, #111 1px 1px 0, #111 1px -1px 0, #111 -1px 1px 0, #111 -1px -1px 0;
+	color: #ffff00;
+	padding: 0 8px;
+}
+
+.h2clear h2
+{
+	clear: both;
+}
+
+.h2intro h2
+{
+	display: table;
+	width: 592px;
+}
+
+h3
+{
+	font-size: 12pt;
+	color: #fff2da;
+	text-shadow: #fff2da 0 0 2px;
+	text-align: center;
+}
+
+h2, h3, h4, h5, h6
+{
+	font-family: verdana, geneva, tahoma, sans-serif;
+	font-weight: normal;
+}
+
+h4
+{
+	font-size: 12pt;
+	color: #ffffff;
+	text-shadow: #111 0 1px 0, #111 0 -1px 0, #111 1px 0 0, #111 -1px 0 0, #111 1px 1px 0, #111 1px -1px 0, #111 -1px 1px 0, #111 -1px -1px 0;
+	text-align: center;
+}
+
+h5
+{
+	font-size: 10pt;
+	color: #e9e9e9;
+	padding-left: 16px;
+	text-align: left;
+	border-bottom: 1px solid #696969;
+	width: 95%;
+	margin: auto;
+}
+
+.demo_thumb
+{
+	display: block;
+	float: right;
+	overflow: auto;
+	width: 96px;
+	height: 96px;
+	margin: 8px 16px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.91);
+}
+
+.demo
+{
+	position: absolute;
+	left: -560px;
+	top: 16px;
+	width: 550px;
+	height: 800px;
+	z-index: 10;
+	visibility: hidden;
+}
+
+.demo_thumb:hover
+{
+	box-shadow: 0 1px 1px #bbb, 0 -1px 1px #bbb, 1px 0 1px #bbb, -1px 0 1px #bbb, 1px 1px 1px #bbb, 1px -1px 1px #bbb, -1px 1px 1px #bbb, -1px -1px 1px #bbb, 0 4px 8px rgba(0, 0, 0, 0.91);
+}
+
+.demo_thumb:hover + .demo
+{
+	visibility: visible;
+}
+
+.junk_maps
+{
+	float: left;
+	width: 128px;
+	height: 128px;
+	margin: 0 16px;
+	display: block;
+	position: relative;
+}
+
+.junk_maps div
+{
+	position: absolute;
+	width: 128px;
+	left: 4px;
+	bottom: -16px;
+	font-size: 8pt;
+}
+
+h5 span
+{
+	font-size: 8pt;
+	color: #b1b1b1;
+	text-shadow: none;
+	padding: 0 8px;
+}
+
+a.labelink
+{
+	font-weight: bold;
+}
+
+ul
+{
+	list-style-position: inside;
+	padding-left: 16px;
+	text-align: left;
+}
+
+a, a:link, a:visited, a:active
+{
+	color: #ffd995;
+	text-decoration: none;
+}
+
+a.extern::after
+{
+	content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMBAMAAACkW0HUAAAAGFBMVEX/////yy3/8c3/2Hv/8c3/yy3/2HtsZEthaBrOAAAABHRSTlMAAAAAs5NmmgAAAElJREFUeF49yjEOgCAQRNG1wBoLL0BCzyGgN2aItc3egOX6Dpjwm5dJRlau1otsyJOT7PoCpLcSB7gDacUOz/VYGnRLwqcq+fsACtMNfMaTqa0AAAAASUVORK5CYII=');
+	margin: 0 0 0 4px;
+}
+
+a:hover
+{
+	color: #fffcf7;
+}
+
+.toc
+{
+	list-style: square inside;
+}
+
+.toc, .label
+{
+	font-weight: bold;
+}
+
+.subtoc
+{
+	font-weight: normal;
+	list-style: disc inside;
+}
+
+.subsubtoc
+{
+	font-weight: normal;
+	font-size: 8pt;
+	list-style: none;
+	margin-left: 1em;
+}
+
+@-moz-keyframes sa_dimensions
+{
+	100% { top: -705px; }
+}
+
+@-webkit-keyframes sa_dimensions
+{
+	100% { top: -705px; }
+}
+
+@keyframes sa_dimensions
+{
+	100% { top: -705px; }
+}
+
+@-moz-keyframes round_vector_ex
+{
+	100% { top: -618px; }
+}
+
+@-webkit-keyframes round_vector_ex
+{
+	100% { top: -618px; }
+}
+
+@keyframes round_vector_ex
+{
+	100% { top: -618px; }
+}
+
+	</style>
+</head>
+<body id="top">
+	<div id="content">
+		<div class="frame h2intro">
+			<div id="pageheader">
+				<img style="display: block; margin: 0 auto; width: 396px; height: 45px" alt="Piles'N'Tiles" src="doc/pnt.png">
+				<div style="position: absolute; left: 4px; top: 0; height: 45px; display: table;">
+					<div style="display: table-cell; vertical-align: middle; text-align: left; font-weight: bold">
+						<a style="display: block" class="extern" href="http://blenderartists.org/forum/showthread.php?377518-Addon-Piles-N-Tiles-Seamless-Tools-for-Blender">Updates</a>
+						<a style="display: block" class="extern" href="http://blenderartists.org/forum/showthread.php?357526-Seamless-Physics-Meshes-and-Textures">Experiments</a>
+					</div>
+				</div>
+				<div style="position: absolute; right: 4px; top: 0; height: 45px; display: table;">
+					<div style="display: table-cell; vertical-align: middle; text-align: right; font-weight: bold">
+						<div>Version 0.1</div>
+						<a style="display: block" href="#v-0-1">Release Notes</a>
+					</div>
+				</div>
+			</div>
+			<div style="position: relative; width: auto; height: 256px; background: transparent url('doc/wf.png') no-repeat left center">
+				<div style="position: absolute; right: 8px; width: 400px; padding: 16px 0">
+					<div style="position: absolute; bottom: 6px; left: 0; width: 400px; text-align: center; font-size: 8pt; color: rgba(195, 195, 195, 0.60)">Hover for tiling preview (<a class="extern" href="http://blenderartists.org/forum/showthread.php?357526-Seamless-Physics-Meshes-and-Textures">More</a>).</div>
+					<img class="demo_thumb" alt="Barrels" src="doc/barrel_thumb.jpg">
+					<div class="frame demo" style="background: url('doc/barrel_demo.jpg') repeat scroll"><!-- Hmm. --></div>
+					<img class="demo_thumb" alt="Junk Pile Normal" src="doc/rocks_thumb.jpg">
+					<div class="frame demo" style="background: url('doc/rocks_demo.jpg') repeat scroll"><!-- Hmm. --></div>
+					<img class="demo_thumb" alt="Rocky Ground" src="doc/rocky_thumb.jpg">
+					<div class="frame demo" style="background: url('doc/rocky_demo.jpg') repeat scroll"><!-- Hmm. --></div>
+					<img class="demo_thumb" alt="Sage" src="doc/sage_thumb.jpg">
+					<div class="frame demo" style="background: url('doc/sage_demo.jpg') repeat scroll"><!-- Hmm. --></div>
+					<img class="demo_thumb" alt="Rusty Cans" src="doc/cans_thumb.jpg">
+					<div class="frame demo" style="background: url('doc/cans_demo.jpg') repeat scroll"><!-- Hmm. --></div>
+					<img class="demo_thumb" alt="Coins" src="doc/coin_thumb.jpg">
+					<div class="frame demo" style="background: url('doc/coin_demo.jpg') repeat scroll"><!-- Hmm. --></div>
+				</div>
+			</div>
+			<div class="subframe" style="float: right; width: 256px; text-align: left; margin-left: 8px;">
+				<h4>Table of Contents</h4>
+				<ul class="toc">
+					<li>
+						<a href="#top">Piles'N'Tiles</a>
+						<ul class="subtoc">
+							<li><a href="#introduction">Introduction</a></li>
+							<li><a href="#limitations">Limitations</a></li>
+							<li><a href="#about">About</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="#tools-and-settings">Tools and Settings</a>
+						<ul class="subtoc">
+							<li>
+								<a href="#seamless-area">Seamless Area</a>
+								<ul class="subsubtoc">
+									<li><a href="#seamless-area-dimensions">Dimensions</a></li>
+									<li><a href="#seamless-area-margin">Margin</a></li>
+									<li><a href="#seamless-area-floor">Floor</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="#primary-tools">Primary Tools</a>
+								<ul class="subsubtoc">
+									<li><a href="#primary-tools-adding">Adding</a></li>
+									<li><a href="#primary-tools-removing">Removing</a></li>
+									<li><a href="#primary-tools-proxy-layers">Proxy Layers</a></li>
+									<li><a href="#primary-tools-particle-systems">Particle Systems</a></li>
+									<li><a href="#primary-tools-proxy-clipping">Proxy Clipping</a></li>
+									<li><a href="#primary-tools-position-optimization">Position Optimization</a></li>
+									<li><a href="#primary-tools-new-proxy-visibility">New Proxy Visibility</a></li>
+									<li><a href="#primary-tools-refreshing">Refreshing</a></li>
+								</ul>
+							</li>
+							<li><a href="#selection-tools">Selection Tools</a></li>
+							<li><a href="#secondary-tools">Secondary Tools</a></li>
+							<li><a href="#proxy-visibility">Proxy Visibility</a></li>
+							<li>
+								<a href="#compilation-tool">Compilation Tool</a>
+								<ul class="subsubtoc">
+									<li><a href="#compilation-tool-compile-options">Compile Options</a></li>
+									<li><a href="#compilation-tool-mesh-options">Mesh Options</a></li>
+								</ul>
+							</li>
+							<li><a href="#cleanup">Cleanup</a></li>
+							<li><a href="#display-settings">Display Settings</a></li>
+							<li><a href="#seamless-camera">Seamless Camera</a></li>
+							<li><a href="#help">Help</a></li>
+							<li>
+								<a href="#node-groups">Node Groups</a>
+								<ul class="subsubtoc">
+									<li><a href="#node-groups-seamless-area">Seamless Area</a></li>
+									<li><a href="#node-groups-seamless-transform">Seamless Transform</a></li>
+									<li><a href="#node-groups-fast-noise">Fast Noise</a></li>
+									<li><a href="#node-groups-round-vector">Round Vector</a></li>
+									<li><a href="#node-groups-round-vector-ex">Round Vector Ex</a></li>
+								</ul>
+							</li>
+							<li><a href="#add-on-preferences">Add-on Preferences</a></li>
+						</ul>
+					</li>
+					<li><a href="#release-notes">Release Notes</a></li>
+				</ul>
+			</div>
+			<h2 id="introduction">Introduction</h2>
+			<p>
+				Piles'N'Tiles provides various tools to aid the creation of seamless meshes and textures via object management in a user defined seamless area. Objects added to this seamless area will then appear to wrap around the edges they encroach by utilizing script managed copies of the object known as seamless proxies. These proxies utilize constraints to copy the transform of the seamless object while maintaining an offset to complete the illusion of wrapping around. The results can be rendered out with an orthographic camera to create various texture maps for use in game and render engines, or other DCC software.
+			</p>
+			<div style="display: table; margin: auto;">
+				<img class="subframe" alt="Wrapping monkey." style="display: block; width: 427px; height: 381px" src="doc/wrap.png">
+			</div>
+			<p>
+				Although seamlessness can easily be achieved manually with dupligroups, dupliverts, and other forms of instancing, this manages individual objects in order to support seamless rigid body simulations. This allows a sizable collection of rigid bodies to be seamless before they even hit the ground. The background of this page was created with the aid of these tools. Various combinations of junk were turned into rigid bodies, made seamless, and finally dropped. This process was repeated multiple times to keep object counts from becoming too high. The texture was rendered at the final resting position.
+			</p>
+			<div style="display: table; margin: auto;">
+				<img class="subframe" alt="Junk pile WIP." style="display: block; width: 950px; height: 467px" src="doc/junk_wip.jpg">
+			</div>
+			<p>
+				Most of the examples displayed in this documentation were rendered straight with Cycles, full lighting included, but most will prefer to render out the usual texture maps: base color, normal, ambient occlusion, roughness, etc. Below is an example of the various rendered maps from the background texture tiled 2x on a plane in Cycles with two light sources:
+			</p>
+			<div style="display: table; margin: auto; margin-bottom: 24px">
+				<div class="subframe junk_maps">
+					<img alt="Base Color" src="doc/junk_base_color.jpg">
+					<div>Base Color</div>
+				</div>
+				<div class="subframe junk_maps">
+					<img alt="Metallic" src="doc/junk_metallic.jpg">
+					<div>Metallic</div>
+				</div>
+				<div class="subframe junk_maps">
+					<img alt="Roughness" src="doc/junk_roughness.jpg">
+					<div>Roughness</div>
+				</div>
+				<div class="subframe junk_maps">
+					<img alt="Normal" src="doc/junk_normal.jpg">
+					<div>Normal</div>
+				</div>
+				<div class="subframe junk_maps">
+					<img alt="Ambient Occlusion" src="doc/junk_ao.jpg">
+					<div>Ambient Occlusion</div>
+				</div>
+			</div>
+			<div style="display: table; margin: auto;">
+				<img class="subframe" alt="Junk pile map usage." style="display: block; width: 950px; height: 950px" src="doc/junk_maps.jpg">
+			</div>
+			<p>
+				Generally you'll want to avoid noticeable repetitive features in seamless textures such as the bright yellow canister in the junk pile. This was dropped in the pile to help emphasize the tiling.
+			</p>
+			<p>
+				Aside from simply managing seamless objects, a few extra conveniences are provided: a toggle-able rigid body <a href="#seamless-area-margin">margin</a> and <a href="#seamless-area-floor">floor</a> for the seamless area, automatic creation of an <a href="#seamless-camera">orthographic camera</a> with render resolution adjustment, a <a href="#compilation-tool">seamless object compiler</a> capable of organizing objects into dupligroups and/or merging them into a single mesh object, and a set of <a href="#node-groups">node groups</a> for Cycles.
+			</p>
+			<h2 id="limitations">Limitations</h2>
+			<p>
+				Currently the seamless tools manage one object at a time. It is not aware of object relationships or dependencies. When an object is added to the seamless area, any proxies created are simply copies of the object via the object's copy() method. Certain object alterations, such as adding modifiers, particle systems, changing properties, etc., will not be propagated to currently existing proxy objects. Most object settings should be finalized before adding it to the seamless area. Constraints are removed on copy since seamless proxies use their own. The exception is rigid body settings. Rigid body settings can be changed after an object is added and upon refresh will propagate the settings to its proxies.
+			</p>
+			<p>
+				There can be only one seamless area per blend file. Originally I thought of allowing multiple seamless areas defined in a single blend file, but after witnessing the performance drop that occurs with large numbers of objects, I decided against it. This is something I would like to implement in the future should this performance issue be remedied.
+			</p>
+			<p>
+				Please keep in mind that these tools are a work-in-progress. All object types, except cameras, can be added to the seamless area. Some will not work properly or may result in undefined behavior. Just the same, some object settings may result in undefined behavior. Not all possible combinations have been tested.
+			</p>
+			<h2 id="about">About</h2>
+			<p>
+				I had been dumping rigid bodies in piles and began wondering if there was a good way to dump rigid bodies in piles that were seamless; either to be rendered out for textures or made into a tile-able mesh. I wanted piles and tiles! Quite possibly tile-able piles of tiles. Experimentation found use in passive rigid body copies, surrounding and mirroring the active rigid body, employing constraints. This worked out reasonably well but was horrible to set up manually. Thus began the development of these tools.
+			</p>
+		</div>
+		<div class="frame h2clear">
+			<h1 id="tools-and-settings">Tools and Settings</h1>
+			<div class="subsec">
+				<h2 id="seamless-area">Seamless Area<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Area</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 74px">
+						<img alt="Seamless area properties." style="display: block; position: absolute; left: -23px; top: -26px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<div class="subframe fright">
+					<img alt="Seamless area root object in outliner." style="display: block; width: 314px; height: 25px" src="doc/outliner.png">
+				</div>
+				<p>
+					This is where the dimensions and related properties of the seamless area are defined. The seamless area will not be visible in the viewport unless its root object exists and area visibility is enabled. Visibility options of the seamless area and its subordinates are described in the <a href="#display-settings">display settings summary</a>. The seamless area root will be created if it does not exist when: an object is added, the rigid body floor or margin is enabled, or the seamless camera is created. When the root object is created it is located at the world origin, not the 3D cursor. The root object is nothing more than an empty named <i>~seamless_area</i> for which to parent seamless objects and dependents. The seamless area can be positioned and rotated by manipulating this object (though scale is not currently supported).
+				</p>
+				<div class="labelcontent">
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 142px; height: 20px">
+								<img alt="Dimensions and axes of the seamless area." style="display: block; position: absolute; left: -27px; top: -30px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<div class="subframe fright">
+							<div style="position: relative; overflow: hidden; width: 320px; height: 235px">
+								<img alt="Changes in dimensions update dependants." style="display: block; position: absolute; top: 0; left: 0; -moz-animation: sa_dimensions 3s steps(3) infinite; -o-animation: sa_dimensions 3s steps(3) infinite; -webkit-animation: sa_dimensions 3s steps(3) infinite; animation: sa_dimensions 3s steps(3) infinite;" src="doc/sa_dimensions.jpg">
+							</div>
+						</div>
+						<p>
+							<span id="seamless-area-dimensions" class="label">Dimensions:</span> These are specified in whole Blender units for simplicity's sake. Any change made to the dimensions should update most dependents that rely on it such as rigid body margin and floor, proxy locations, orthographic camera scale, render resolution, and the seamless transform node group.
+						</p>
+						<p>
+							For seamless objects that have clipping enabled, dimension changes may still require a refresh of said objects to properly recalculate clipped proxies.
+						</p>
+						<p>
+							The seamless axes can be toggled here as well, but any change to them requires a manual refresh of all seamless objects. This is useful for restricting tiling to just one axis.
+						</p>
+						<p>
+							<b>NOTE:</b> Disabling an axis only restricts the seamless proxies along that axis and has no bearing on other dependents (margin, floor, camera, etc.). Disabling both axes effectively removes all proxies.
+						</p>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 143px; height: 20px">
+								<img alt="Margin toggle and size." style="display: block; position: absolute; left: -27px; top: -55px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="seamless-area-margin" class="label">Margin:</span> Also toggle-able in the area panel is a rigid body margin which limits how far a rigid body can leave the seamless area. This automatically re-sizes with the seamless area and is parented to it. The viewport visibility toggle is in the <a href="#display-settings">display panel</a>, but the margin is only drawn if the seamless area is visible as well. As a result of the parenting, the margin transforms with the seamless area. This may be undesirable for setups involving rotated seamless areas or other complexities where rolling your own rigid body containment solution may be best. Seamless margin is simply provided as a quick convenience.
+						</p>
+						<div class="subframe fright">
+							<img alt="Margin and floor display with seamless area." style="display: block; width: 320px; height: 247px" src="doc/margin_floor.jpg">
+						</div>
+						<p>
+							The margin is a method of keeping active rigid bodies contained, especially during outbreaks popcornitis. It is recommended to keep the margin at least big enough to encompass the largest active rigid bodies in the seamless area. If the margin is too small, objects have a higher chance to come to a rest against the margin instead of the seamless proxies. This obstructs even distribution of rigid bodies encroaching the edge, creating possible gaps in the wrap-around effect.
+						</p>
+						<p>
+							<b>TIP:</b> If the absolute collision of the margin is undesirable, force fields are an excellent alternative for proper containment.
+						</p>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 143px; height: 21px">
+								<img alt="Floor toggle and height." style="display: block; position: absolute; left: -27px; top: -74px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="seamless-area-floor" class="label">Floor:</span> A supplement for the rigid body margin, a rigid body floor is also conveniently toggle-able for fast rigid body pile setups. The corresponding value field specifies the floor height relative to the root of seamless area. Just like the margin, it is updated with the seamless area dimensions and is parented to it. Its visibility is also set in the <a href="#display-settings">display panel</a>.
+						</p>
+						<p>Below is an example of the margin and floor being utilized to contain a pile of barrels. The points indicate the locations of seamless proxies.</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table;">
+								<img alt="Example of margin and floor in use." style="display: block; width: 736px; height: 497px" src="doc/margin_floor_example.jpg">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="subsec">
+				<h2 id="primary-tools">Primary Tools<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Tools</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 89px">
+						<img alt="The main tools for managing seamless objects." style="display: block; position: absolute; left: -23px; top: -131px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					These tools and related settings are used for adding, updating, and removing objects from the seamless area. The properties here have varying scope of which tools they affect. Adding and refreshing seamless objects are among the most expensive operations to perform depending on the total number of objects in the scene. The more objects in the scene the slower these tools get. Because of the performance implications of large numbers of objects, it is recommended to manage a seamless area in a standalone blend file, separate from any primary scene the result is to be used in.
+				</p>
+				<div class="labelcontent">
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 71px; height: 20px">
+								<img alt="Add selected objects to seamless area." style="display: block; position: absolute; left: -27px; top: -135px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="primary-tools-adding" class="label">Adding:</span> To add selected object(s) to the seamless area, use the button here or <span class="searchterm">Add Seamless</span> from the command search menu. When an object is added to the seamless area it is placed in the ~seamless_area object's hierarchy, added to script managed groups, and based on the settings summarized in this section, its proxies are created or destroyed as appropriate. If the object is already seamless, adding is the equivalent of a refresh while assigning the proxy layers and clipping state settings below. This allows easy duplication of current seamless objects.
+						</p>
+						<p>
+							<b>TIP:</b> Turn off relationship lines in the display panel of the 3D view's property shelf. Unfortunately, Blender draws all relationship lines when this is enabled rather than just those of selected objects. Seamless objects and proxies combined with parenting can sometimes make the scene difficult to view through the relationship lines as their numbers increase.
+						</p>
+						<h5>Object Count:<span>Maintaining Performance</span></h5>
+						<p>
+							Keeping the object count low is key to performance, not only for the scene, but for rigid body simulations as well. The highest object count I have personally tested with these tools was around 14k objects with the gold coin experiment. With this many objects, scene updates become very slow. With rigid body simulations, object count, active vs passive, and the collision primitives specified can drastically affect simulation performance.
+						</p>
+						<p>
+							Here is a few techniques for keeping performance up:
+						</p>
+
+						<div class="tech">
+							<p>
+								<b>Use Dupligroups:</b> If you are not adding rigid bodies or interactive objects to the seamless area, the best method is more than likely to just place said objects in a group, create an instance of the group, then add only the group instance to the seamless area.
+							</p>
+							<p>
+								Every time another non-interactive object needs to be added, just append it to the group and position as needed.
+							</p>
+							<p>
+								Dupligroups are also handy if you are using high poly meshes as rigid bodies. For each unique high poly object, create a simplified shell mesh to be used as the rigid body and enable dupligroups on this object, specifying the group with the high poly object. Many objects using the simplified shell instead of the actual high poly mesh saves a huge amount of memory as well as performance.
+							</p>
+						</div>
+						<div class="tech">
+							<p>
+								<b>2x2 Offset:</b> Place objects in one of the corners of the seamless area with clipping enabled. This ensures only 3 seamless proxies are created. An excellent combo for dupligroup instances, particle systems, and other static objects.
+							</p>
+						</div>
+						<div class="tech">
+							<p>
+								<b>Cumulative Simulations:</b> For rigid bodies, avoid adding all rigid body objects and running the simulation in the seamless area at the same time. Instead, start with a small selection, such as the heavy or large objects. Add these rigid bodies to the seamless area and drop them. Once the simulation is complete, apply the transform of these objects at the desired frame of the animation and convert them to passive. Once converted to passive, ensure the proxy clipping option is enabled and refresh the seamless objects. This will remove all proxies that are not encroaching the seamless area and margin. At this point repeat the process with the next batch of objects.
+							</p>
+							<p>
+								To reuse objects in the first batch: duplicate them, convert them to actives, and refresh the selection to generate their proxies.
+							</p>
+							<p>
+								Depending on your goal, you may wish to start with the large objects and work your way to the smaller ones or vise-versa. The stacking of objects may not be physically accurate using this technique, but the performance savings and control may be worth it.
+							</p>
+							<p>
+								To the possible detriment of rigid body performance, but increased accuracy, you may also want to change the collision primitive on the passives to something more precise as they accumulate. If you do, be sure to refresh all of the passives to propagate the change to their proxies.
+							</p>
+						</div>
+						<div class="tech" style="margin-bottom: 16px">
+							<p>
+								<b>Cumulative Rendering:</b> Rigid body simulations or not, there may be cases where huge numbers of objects need to be stacked or layered, but the objects are too small or too many to efficiently manage. A good example would be gravel: Incredibly high number of small rocks resting on progressively smaller rocks.
+							</p>
+							<p>
+								Drop a combination of objects of approximately similar scales, maybe randomized a bit. In the case of gravel, drop a collection of rocks. For the first iteration use an appropriate ground material. Render out the required texture maps (normal, ao, etc.).
+							</p>
+							<p>
+								Reset the rigid body simulation, re-randomize the objects, including any required seeds used by the object materials. Replace the ground material with a new one utilizing the texture maps previously rendered out. Scale these texture maps to 2, 3, etc. times smaller than the seamless area to ensure proper alignment with no seams. Re-drop the objects and re-render the texture maps. Rinse. Repeat. Each iteration uses the previously rendered results as the new ground material with smaller scale to fill in the fine detail.
+							</p>
+							<p>
+								An alternative to reusing previous renders as the ground/backdrop material is to simply render out the maps with transparency and manually scale and merge them in Photoshop. It may be more or less work depending on your needs/workflow.
+							</p>
+						</div>
+						
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 73px; height: 20px">
+								<img alt="Remove selected objects from seamless area." style="display: block; position: absolute; left: -97px; top: -135px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="primary-tools-removing" class="label">Removing:</span> To remove selected object(s) from the seamless area, use the button here or <span class="searchterm">Remove Seamless</span> from the command search menu. Removing an object cleans up its proxies and clears it from the ~seamless_area object's hierarchy as well as the script managed groups.
+						</p>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 83px; height: 21px">
+								<img alt="Number of layers of proxies surrounding seamless objects." style="display: block; position: absolute; left: -27px; top: -154px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="primary-tools-proxy-layers" class="label">Proxy Layers:</span> When adding seamless objects, this sets the number of layers of proxy objects to create (clipping state permitting). Setting more than one layer is handy for objects that have dimensions that extend beyond those of the seamless area as well as objects who’s affect extends as much: light sources, objects contributing to AO/GI, etc. This can be changed manually on a seamless object by setting the object's custom property named <i>seamless_level</i> to the desired value and then refreshing the object.
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table;">
+								<img alt="Proxy Layers Example" style="display: block; width: 750px; height: 188px" src="doc/plex.jpg">
+							</div>
+						</div>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 21px; height: 21px">
+								<img alt="Allow particle systems on seamless proxies." style="display: block; position: absolute; left: -109px; top: -154px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="primary-tools-particle-systems" class="label">Particle Systems:</span> When enabled, particle systems on proxies are handled according to the particle system's seamless mode. The mode is specified in the particle system properties page below the type and seed settings.
+						</p>
+						<div class="subframe fright">
+							<img alt="Refresh particle system button in particle properties." style="display: block; width: 290px; height: 56px" src="doc/psys.png">
+						</div>
+						<p>
+							If this is disabled, all particle systems are cleared from seamless proxies as they are duplicated. In this case, ensure that these particles are hidden at render time to preserve seamlessness. This is handy for situations where you simply wish to reference the particle system elsewhere, such as a particle instance modifier utilized in the technique explained below.
+						</p>
+						<p>
+							Whether or not particles appear the same on duplicate objects with matching seeds depends greatly on a variety of particle system settings. Some settings work while others fail and some cannot be used if others are. A few only work if the particle system settings are duplicated and only have one user.
+						</p>
+						<h5>Seamless Modes:<span>Handling Particle Systems</span></h5>
+						<div class="subframe fright">
+							<img alt="Seamless particle system modes." style="display: block; width: 87px; height: 92px" src="doc/psys_mode.png">
+						</div>
+						<p>
+							A seamless mode property is defined in each particle system settings that dictates what happens with that particle system on newly created seamless proxies. This mode must be set before the object with the particle system is made seamless. To change the mode of a particle system already in the seamless area, the users of the particle system must be removed and reinserted to the seamless area. Currently seamless object updates do not sync particle systems between an object and its proxies.
+						</p>
+						<p>
+							<strong>Duplicate:</strong> Particle systems are copied, their settings are duplicated for each proxy and a driver is added to the seed value to stay in sync with the seamless object. Because each particle system on each proxy uses its own particle settings data-block, the settings should be finalized before making seamless, though the refresh button does sync the particle count and distribution properties.
+						</p>
+						<p>
+							Use this when you want to have random element order enabled. Having physics enabled appears to not work unless the particle system type is set to hair and even then, some properties may not work.
+						</p>
+						<p>
+							<strong>Linked:</strong> The particle systems are copied as-is and a driver is added to the seed value to stay in sync with the seamless object. In addition, random element order is turned off. Because all the proxies are linked to the same particle settings data-block, changes can easily be made after insertion to the seamless area.
+						</p>
+						<p>
+							This is handy when emitting from a single element mesh, such as a flat quad filling the seamless area. Again, some properties may not work.
+						</p>
+						<p>
+							<strong>Remove:</strong> This removes the particle system from seamless proxies as they are created.
+						</p>
+						<p>
+							<strong>None:</strong> This mode takes no action. The particle systems are copied as-is. No drivers or automated changes are applied.
+						</p>
+						<p>
+							<b>NOTE:</b> Despite the seed being synced with drivers for both linked and duplicate modes, the update via drivers refreshes the particle's random size, rotation, etc. but fails to refresh the particle's location. Unfortunately this must be done manually. Changing a property in the particle system settings usually does the trick, even when reassigned the same value. A refresh button located next to the seamless mode does this.
+						</p>
+						<h5>Dupli Particles:<span>Alternative to Using Particle Systems Directly</span></h5>
+						<p>
+							Although particle systems can be synchronized between seamless objects and their proxies, an unpredictable mishmash of options must be configured precisely to successfully wrap around seamlessly.
+						</p>
+						<p>
+							An obvious solution of course is to make duplicates real and add them to a group then add a group instance to the seamless area. The down side is that this is a destructive workflow. You cannot easily tweak the particle system's settings and have the changes automatically reflected. In addition, this can drastically increase the object count of the scene depending on your particle numbers.
+						</p>
+						<p>
+							The workaround is to utilize particle instance modifiers on single triangle meshes with duplifaces enabled and a group instance child for each unique particle object type. Umm... WHAT?
+						</p>
+						<p>
+							For each unique object emitted from each particle system:
+						</p>
+						<div class="tech">
+							<p>
+								<b>1. Unique Group:</b> Add the object to its own unique group and place it at world origin. If a single particle represents multiple objects, the same applies: add all objects used by a single particle to their own unique group and place their relative center at world origin. The world origin relative to the object(s) being the emission point.
+							</p>
+							<p>
+								<b>2. Triangle Mesh:</b> Create a single triangle mesh with the triangle's area scaled to exactly 1.0 or duplicate should you already have one. Easiest way to create one is in object mode: Add > Mesh > Circle > Set vertices to 3, fill type to ngon, and radius to 0.8774.
+							</p>
+							<p>
+								Ensure this mesh is at the world origin.
+							</p>
+							<p>
+								Add a particle instance modifier to the single triangle object (if it does not already have one) and point it to the source particle system. Make sure <i>Size</i> is checked (and <i>Children</i>, if desired) under the <i>Create From:</i> section of the particle instance modifier's panel.
+							</p>
+							<p>
+								In the <i>Duplication</i> panel of the triangle object's properties select <i>Faces</i> to enable dupliface instancing. Ensure <i>Scale</i> is checked and <i>Inherit Scale</i> is 1.0.
+							</p>
+							<p>
+								<b>3. Unique Group Instance:</b> Add an instance of the group created in step 1 and parent it (without inverse) to the triangle object from step 2. The default hotkeys for parenting without inverse is Shift + Ctrl + P.
+							</p>
+							<p>
+								After parenting, instances of the particle objects should be emitting from the triangles of the triangle object.
+							</p>
+							<p>
+								The reason we parent a group instance to the triangle object instead of directly parenting the objects themselves is because rotation of our dupliface instances goes all fubar. The other benefit of doing this is we can adjust the particle object's spawn location and rotation offset. Either by manipulating the object(s) in the unique group relative to world origin, or by manipulating the single triangle itself.
+							</p>
+							<p>
+								<b>4. Seamless Particle Group:</b> If this has not already been done: Create a single seamless particle group and add an instance of it to the seamless area (at the area's origin of course). This only needs to be done once.
+							</p>
+							<p>
+								Add the triangle mesh from step 2 and group instance from step 3 to the seamless particle group.
+							</p>
+						</div>
+						<p>
+							Source particle systems can be located on anything; either seamless objects or not. The catch is that each unique randomized object needs to have its own particle system with unique seed and the above steps need to be repeated for each. For example, if you have 4 different grass meshes that you want to randomly spawn, you need 4 particle systems with different seeds (so they don't appear at the same location) and repeat the above steps for each one.
+						</p>
+						<p>
+							If you use this solution, source particle systems also are not directly rendered so you can set the render type in the particle system's render panel to None or leave it at halo so you can still see the locations (and Cycles does not render them).
+						</p>
+						<p>
+							Although you may now have multiple particle systems to manage, each one can be adjusted independently for each unique emission object, allowing for a non-destructive workflow of particles existing seamlessly with randomized attributes functioning correctly.
+						</p>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 21px; height: 21px">
+								<img alt="Do not create proxies outside of seamless area and margin." style="display: block; position: absolute; left: -129px; top: -154px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="primary-tools-proxy-clipping" class="label">Proxy Clipping:</span> If this option is enabled, proxies will only be created if they are encroaching the seamless area and margin (if the margin is enabled). Encroachment is found using a simple AABB intersection test. Clipping is a great way to keep object count low and maintain reasonable performance. For active rigid bodies and a few other types of objects or object properties, clipping is ignored and all proxies are created regardless of this setting. Similar to proxy layers, this option can be changed manually on a seamless object by setting the object's custom property named <i>seamless_clip</i> to True or False and then refreshing the object.
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table;">
+								<img alt="Clipping Example" style="display: block; width: 750px; height: 278px" src="doc/cex.jpg">
+							</div>
+						</div>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 21px; height: 21px">
+								<img alt="Keep seamless objects as close to the seamless area as possible." style="display: block; position: absolute; left: -149px; top: -154px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="primary-tools-position-optimization" class="label">Position Optimization:</span> If a proxy's encroachment is greater than that of the seamless object it represents, the seamless object is moved to its location. This option is used by all operators that utilize a seamless object update, including some operators not listed in this panel. A good use for this is to ensure a compact mesh or group instance before compiling seamless objects.
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table;">
+								<img alt="Position Optimization Example" style="display: block; width: 750px; height: 289px" src="doc/poex.jpg">
+							</div>
+						</div>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 143px; height: 21px">
+								<img alt="Visibility settings of newly created proxies." style="display: block; position: absolute; left: -27px; top: -174px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="primary-tools-new-proxy-visibility" class="label">New Proxy Visibility:</span> These are the default visibility settings used for any newly created proxy objects resulting from any operators that utilize a seamless object update. In order they are: visibility, selectability, and renderability (as listed in the outliner), and draw type (as listed in the object display panel). This has no bearing on currently existing proxy objects. To change these visibility properties on current proxies, either for all seamless objects or only those selected, use controls in the <a href="#proxy-visibility">proxy visibility</a> panel.
+						</p>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 143px; height: 21px">
+								<img alt="Refresh all or selected seamless objects." style="display: block; position: absolute; left: -27px; top: -194px" src="doc/view_3d_tools.png">
+							</div>
+						</div>
+						<p>
+							<span id="primary-tools-refreshing" class="label">Refreshing:</span> To refresh all seamless objects click the refresh button or to refresh only selected seamless objects click the cursor button next to it. This operator is listed as <span class="searchterm">Refresh Seamless</span> in the command search menu. Refreshing recalculates seamless proxies and independently cleans up any rogue proxy objects. Rogue proxies can result either from a user deleting a seamless object or a bug in one of the seamless tools (I make no claim that these tools are bug free or perfect in any way).
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="subsec">
+				<h2 id="selection-tools">Selection Tools<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Tools</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 89px">
+						<img alt="Selection tools for seamless objects and area." style="display: block; position: absolute; left: -23px; top: -216px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					Tools for easily selecting, deselecting, and inverting selections of seamless objects as well as quick selection of the seamless area root object and placement of the 3D cursor at the root object's location. They are listed as <span class="searchterm">Select Seamless</span>, <span class="searchterm">Deselect Seamless</span>, <span class="searchterm">Invert Seamless Selection</span>, <span class="searchterm">Select Seamless Area</span> and <span class="searchterm">Cursor to Seamless Area</span> in the command search menu.
+				</p>
+			</div>
+			<div class="subsec">
+				<h2 id="secondary-tools">Secondary Tools<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Tools</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 89px">
+						<img alt="Additional tools for manipulating seamless objects." style="display: block; position: absolute; left: -23px; top: -301px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					Additional operators for manipulating seamless objects; either all or only those that are selected. These include applying visual transform, converting active rigid body objects to passive, and toggling seamless proxy clipping. Their respective entries in the command search menu are <span class="searchterm">Apply Seamless Visual Transform</span>, <span class="searchterm">Active Seamless to Passive</span>, and <span class="searchterm">Set Seamless Clipping</span>.
+				</p>
+			</div>
+			<div class="subsec">
+				<h2 id="proxy-visibility">Proxy Visibility<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Tools</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 49px">
+						<img alt="Tools to change visibility settings of current proxies." style="display: block; position: absolute; left: -23px; top: -386px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					Tool to change the visibility, selectability, and renderability (as listed in the outliner), and draw type of already existing seamless proxy objects. This can be done to all proxies or only those of the selected seamless objects via the buttons in this panel or <span class="searchterm">Set Seamless Proxy Visibility</span> in the command search menu. Because this only operates on seamless proxies, there are no expensive updates involved for the seamless objects. These are a copy of the <a href="#primary-tools-new-proxy-visibility">same options</a> listed for new proxies in the primary tools, to provide an independent way of dealing with proxies that already exist. Even if proxies are hidden, their location is still displayed as a point if the proxies option is enabled in the <a href="#display-settings">display panel</a>.
+				</p>
+			</div>
+			<div class="subsec">
+				<h2 id="compilation-tool">Compilation Tool <b>Experimental</b><span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Tools</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 42px">
+						<img alt="Tool to easily organize seamless objects into groups or a joined mesh." style="display: block; position: absolute; left: -23px; top: -431px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					Utility for organizing seamless objects into a group (for dupligroup usage) and/or combining compatible objects into a single mesh object. To compile use the button in this panel or <span class="searchterm">Compile Seamless Objects</span> in the command search menu. Click the arrow next to the compile button to toggle display of compile options. Because of the experimental nature of this tool, caution is recommended (have backups, save before use, etc.), especially with the mesh compiler.
+				</p>
+				<p>
+					The original idea behind this tool was too create an easy way of removing objects from the seamless area, group them, and then reinsert them as group instances. This was primarily to reduce object count once work was finished with any rigid body sims. The number of options has increased since then, but nothing here is finalized. This is still a very experimental work-in-progress.
+				</p>
+				<div class="labelcontent">
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<img alt="Standard compile options." style="display: block; width: 141px; height: 148px" src="doc/compile_options.png">
+						</div>
+						<p>
+							<span id="compilation-tool-compile-options" class="label">Compile Options:</span> Here you can specify the seamless compile type to either group or mesh, the name of the resulting group or mesh, and the layer(s) in which to place the result. The seamless area can be completely cleaned up and all associated objects removed. Rigid body settings of resulting objects can be cleared. The compiled result can be reinserted into the seamless area, assuming it is not set to be cleared.
+						</p>
+						<p>
+							If reinsertion is enabled, groups are reinserted using an empty with a dupligroup instance and meshes are reinserted as-is. If no layer is specified the result stays on the same layer(s), and if reinserted, reinsertion uses the currently active layer(s). It should also be noted that reinsertion uses the current settings specified under primary tools for adding objects to the seamless area (proxy layers, clipping, etc.).
+						</p>
+						<p>
+							The compiled group can be used as-is for instancing/dupligroups, tiling each instance as many times as needed. This however, is limited to flat arrays of the instances. If distortion is needed, such as stones making up a curved pathway, compiling a mesh is recommended.
+						</p>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<img alt="Mesh compile options." style="display: block; width: 141px; height: 221px" src="doc/mesh_options.png">
+						</div>
+						<div class="subframe fright">
+							<img alt="Seamless mesh used with array and curve modifiers to make a stone path." style="display: block; width: 181px; height: 329px" src="doc/mesh_curve.jpg">
+						</div>
+						<p>
+							<span id="compilation-tool-mesh-options" class="label">Mesh Options:</span> Mesh compilation combines all seamless mesh objects into a single mesh object. This alone can just as easily be done by converting to mesh and manually joining the seamless objects, but this tool provides a few more options.
+						</p>
+						<p>
+							<strong>Use Group:</strong> The compiled mesh is placed in a group, and if reinsertion is enabled, the group instance is reinserted rather than the mesh object itself.
+						</p>
+						<p>
+							<strong>All Objects:</strong> The compiled mesh and all other seamless objects are placed in a group.
+						</p>
+						<p>
+							<strong>Convert Non-Mesh:</strong> If an object can be converted to a mesh (text, curves, etc.) it will be included in the compiled mesh.
+						</p>
+						<p>
+							<strong>Vertex Colors:</strong> Toggle the creation of vertex color layers with random colors assigned to each unique object that makes up the mesh. When enabled the name of the layer can be specified below the checkbox. When using the generated vertex colors and UVs, keep in mind Blender's limit on the total number of each type of data layer, especially if the objects being joined are already have them.
+						</p>
+						<p>
+							<strong>UVs:</strong> Toggle the creation of UV layers containing various information: random values, object location, and object space. When enabled the name of the layer can be specified below the checkbox, as well as related options for each setting. Object space and location can use either one or two uv layers depending on if the Z value is needed. If the Z value is needed, the remaining channel of the second UV layer can be set to a random value or an incrementing unique value. Random values are limited between 0.0 and 1.0.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="subsec">
+				<h2 id="cleanup">Cleanup<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Tools</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 42px">
+						<img alt="Seamless area cleanup tools." style="display: block; position: absolute; left: -23px; top: -469px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					Tool to remove all objects from the seamless area and a tool to remove the seamless area itself. These are listed as <span class="searchterm">Remove All Seamless</span> and <span class="searchterm">Cleanup Seamless</span> in the command search menu.
+				</p>
+			</div>
+			<div class="subsec">
+				<h2 id="display-settings">Display Settings<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Display</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 43px">
+						<img alt="Seamless area and proxy viewport display options." style="display: block; position: absolute; left: -23px; top: -545px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					These properties toggle the visibility of the seamless area and related objects as represented by their special appearance in the viewport. The colors associated with these items may be customized in the add-on preferences panel.
+				</p>
+			</div>
+			<div class="subsec">
+				<h2 id="seamless-camera">Seamless Camera<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Camera</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 95px">
+						<img alt="Seamless camera management tools." style="display: block; position: absolute; left: -23px; top: -622px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					The tools here are used to manage an orthographic camera associated with the seamless area. The operators to create or destroy the camera in this panel change with its existence and are listed as <span class="searchterm">Create Seamless Camera</span> or <span class="searchterm">Delete Seamless Camera</span> in the command search menu. Additionally tools to flip the camera and reset it; listed as <span class="searchterm">Flip Seamless Camera</span> and <span class="searchterm">Reset Seamless Camera</span> in the command search menu.
+				</p>
+				<p>
+					When this camera exists, its orthographic scale and current render resolution are automatically adjusted to fit the seamless area. The render resolution specified here can be either minimum resolution or maximum resolution for the benefit of a seamless area with non-equal dimensions.
+				</p>
+				<h5>Rendering Textures:<span>Random Thoughts</span></h5>
+				<div class="subframe fright">
+					<img alt="Color management set to None" style="display: block; width: 299px; height: 90px" src="doc/colman.png">
+				</div>
+				<p>
+					For certain texture maps such as normal and ambient occlusion, color management needs to be turned off. This is done in the color management panel in the scene properties.
+				</p>
+				<p>
+					Some render passes in Cycles are either incomplete or not transformed to the desired space. For example, where the AO pass correctly takes into account material displacement output and normal texturing, the normal pass only utilizes displacement socket of the material output, ignoring any normal inputs on the various shader nodes that use it. In addition the normal pass is not transformed into camera space.
+				</p>
+				<p>
+					One strategy to work around the limitations of render passes is to ensure that all materials for your scene utilize a global output node group. Doing so allows you to globally override material outputs while maintaining access to unique material information. For example the junk pile background for this page uses an output node group employing a metallic/rough physically based model. By simply editing this node group, rendering out the required texture maps is easy.
+				</p>
+				<div style="display: table; margin: auto;">
+					<img class="subframe" alt="Global material output node group." style="display: block; width: 585px; height: 180px" src="doc/global_output.png">
+				</div>
+				<p>
+					To render the normal map, the normal input of the group is run through a world to camera vector transform node, scaled and offset with a mapping node, and finally plugged into an emission shader node. To render the output, this emission node is plugged into the surface output, replacing the default.
+				</p>
+				<div style="display: table; margin: auto;">
+					<img class="subframe" alt="Normal output override." style="display: block; width: 950px; height: 653px" src="doc/output_override.jpg">
+				</div>
+				<p>
+					The normal map channels can be easily inverted by setting x and/or y scales to negative and swapped by setting z rotation to +/- 90 degrees.
+				</p>
+				<p>
+					With the normal map example, color management is turned off of course, but the other maps are done similarly, they are plugged directly into an emission output. The emission output is used for simplicity's sake as there are currently no custom data outputs and passes available for Cycles.
+				</p>
+			</div>
+			<div class="subsec">
+				<h2 id="help">Help<span>3D View (Object Mode) > Tool Shelf > Seamless Tab > Help</span></h2>
+				<div class="subframe fleft">
+					<div style="position: relative; overflow: hidden; width: 151px; height: 39px">
+						<img alt="Link to this documentation." style="display: block; position: absolute; left: -23px; top: -747px" src="doc/view_3d_tools.png">
+					</div>
+				</div>
+				<p>
+					Contains a link to the very documentation you are viewing right now. Link can also be accessed as <span class="searchterm">View Seamless Tools Documentation</span> from the command search menu. A link to this documentation is also located in the add-on preferences where there is an option to toggle this panel as well.
+				</p>
+			</div>
+			<div class="subsec">
+				<h2 id="node-groups">Node Groups<span>Node Editor (Shader) > Property Shelf > Seamless Tools</span></h2>
+				<div class="subframe fright">
+					<div style="position: relative; overflow: hidden; width: 171px; height: 106px">
+						<img alt="Seamless tools for node groups." style="display: block; position: absolute; left: -3px; top: -27px" src="doc/node_editor_tools.png">
+					</div>
+				</div>
+				<p>
+					A few node groups for Cycles are included with this add-on to ease seamless material creation and provide an abundance of alternative uses. The node groups can be loaded and refreshed from the property shelf here and globally by finding <span class="searchterm">Load Seamless Node Groups</span> and <span class="searchterm">Refresh Seamless Node Groups</span> in the command search menu. The approximate object location resolution entry shows up in this panel when the Seamless Area node group exists for ease of access to this internal property. Its use is detailed in the Seamless Area node group summary below.
+				</p>
+				<p>
+					In the context of these tools the Seamless Area node group is the primary group of interest. It internally utilizes all the other node groups except Fast Noise which is included to compliment its use.
+				</p>
+				<p>
+					<b>NOTE:</b> Although these node groups are intended to be used in Cycles, Round Vector, Round Vector Ex, and Fast Noise work correctly in BI. The Seamless Transform node group can be made to work in BI by replacing the Separate XYZ and Combine XYZ nodes with their RGB counterparts. At the time I did not realize BI did not get the XYZ versions. Unfortunately object location is not provided as an input in BI, making a compatible Seamless Area node group impractical.
+				</p>
+				<div class="labelcontent">
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 171px; height: 117px">
+								<img alt="Seamless Area node group." style="display: block; position: absolute; left: -10px; top: -6px" src="doc/ng_sa_ob_loc_approx.png">
+							</div>
+						</div>
+						<p>
+							<span id="node-groups-seamless-area" class="label">Seamless Area:</span> Provides coordinates in seamless space of object location, approximation of object location, and texture coordinates. The seamless area node group is intended to help create shaders for seamless objects and their proxies so that their material and/or textures appear the same on all of them despite being separate objects.
+						</p>
+						<p>
+							For all seamless area outputs X and Y tiles with the seamless area and Z coordinate extends infinitely from the origin (positive and negative). X and Y start at 0.0 in the lower left and end at 1.0 in the upper right of the seamless area.
+						</p>
+						<h5>Object Location:<span>Vector</span></h5>
+						<p>
+							The object location output provides matching object coordinates between a seamless object and its proxies. This is useful for creating values that apply to the entire object. Ideally this would be accomplished with custom object properties that would be copied when the proxies are created, but unfortunately Cycles provides no way to input a custom object scoped property. The only object wide properties Cycles provides are unique to each object or based on externals like render layers. Doing this with UV or vertex color layers is a waste of memory as the same value is stored for every face loop of the mesh and different objects would need unique data-blocks.
+						</p>
+						<p class="warn">
+							<b>Warning:</b> Using object location to define material appearance is not recommended for animations or animated objects with motion blur enabled. Objects should generally be static for rendering unless you're specifically after the effect this produces. If animation or motion blur is needed, a UV or vertex color solution may be required.
+						</p>
+						<p>
+							Object location output visualized through the seamless camera:
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table; margin-bottom: 8px;">
+								<img alt="Object location example." style="display: block; width: 519px; height: 370px" src="doc/sa_location.png">
+							</div>
+							<div class="subframe" style="margin: auto; display: table">
+								<img alt="Object location usage." style="display: block; width: 378px; height: 134px" src="doc/ng_sa_ob_loc.png">
+							</div>
+						</div>
+						<p>
+							A good use of object location is adding or subtracting offsets to textures such as those using object space coordinates. This can be used to prevent obvious patterns from showing up in the same location on matching objects. The intensity of the offset may need to be scaled depending on its use.
+						</p>
+						<p>
+							Object location may also be used directly as texture coordinates. This could be used to match colors to a texture mapped to the seamless area or possibly pseudo random values by scaling with large numbers or values of another texture.
+						</p>
+						<p>
+							<b>NOTE:</b> These coordinates should be used on textures with smooth interpolation between neighboring values or operations where precision errors do not produce noticeable differences in output. This is critical to maintaining the appearance of seamlessness between a seamless object and its proxies when encroaching the edge of the seamless area.
+						</p>
+						<h5>Approx Object Location:<span>Vector</span></h5>
+						<div class="subframe fright">
+							<div style="position: relative; overflow: hidden; width: 164px; height: 53px">
+								<img alt="Approx object location resolution." style="display: block; position: absolute; left: -7px; top: -76px" src="doc/node_editor_tools.png">
+							</div>
+						</div>
+						<p>
+							This output is similar to object location, but the coordinates are approximated by rounding them within a fixed range of values. The resolution of this stepped range can be easily adjusted in the Seamless Area panel of the node editor's property shelf. The higher the resolution, the more accurate the coordinates become. This should be used for precision sensitive situations such as unfiltered textures or operations involving large values.
+						</p>
+						<p>
+							If usage of the regular object location results in a seamless object or any of its proxies not matching each other, use this instead. Because of the rounding involved, transformed locations of a seamless object and its proxies are more likely to be the same.
+						</p>
+						<p>
+							The main purpose of this output is to be used with the Fast Noise node group to create per object random values as seen in the below example:
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table; margin-bottom: 8px;">
+								<img alt="Approx object location output random values example." style="display: block; width: 519px; height: 370px" src="doc/sa_ob_loc_approx_noise.png">
+							</div>
+							<div class="subframe" style="margin: auto; display: table">
+								<img alt="Approx object location random values usage." style="display: block; width: 521px; height: 136px" src="doc/ng_sa_ob_loc_approx_noise.png">
+							</div>
+						</div>
+						<p>
+							<b>NOTE:</b> The fast noise node group output will most likely be different between the CPU and GPU. Generally this should not be an issue as the intent is to render or bake the results on the same machine by the same user. An attempt to re-render on a different machine might result in a difference between the new and old texture maps.
+						</p>
+						<p>
+							To change the &quot;seed&quot; for of the noise, simply add or subtract randomly chosen constants to offset its input vector. Using fast noise with varying offsets should provide however many pseudo random values are needed. Here is an example of random colors using 3 fast noise instances:
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table; margin-bottom: 8px;">
+								<img alt="Approx object location random colors example." style="display: block; width: 519px; height: 370px" src="doc/sa_ob_loc_approx_rand.png">
+							</div>
+							<div class="subframe" style="margin: auto; display: table">
+								<img alt="Approx object location random colors usage." style="display: block; width: 692px; height: 380px" src="doc/ng_sa_ob_loc_approx_rand.png">
+							</div>
+						</div>
+						<p>
+							Tune the offsets for each noise instance until a preferable distribution is found. Although the example here just uses random RGB values, more control may be found in scaling the noise values and/or using an HSV combiner. A single noise instance driving a color ramp is also an excellent combination for more precise color ranges.
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="position: relative; width: auto; height: 512px; background: url('doc/simple_random_color.jpg') repeat">
+								<!-- Yep... -->
+							</div>
+						</div>
+						<h5>Position:<span>Vector</span></h5>
+						<p>
+							The position output provides texture coordinates that fill the seamless area. Its provided to make it easy to map a tile-able texture to the seamless area. This is handy for backdrop or ground materials:
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table; margin-bottom: 8px;">
+								<img alt="Position example." style="display: block; width: 519px; height: 370px" src="doc/sa_position.png">
+							</div>
+							<div class="subframe" style="margin: auto; display: table">
+								<img alt="Position usage." style="display: block; width: 379px; height: 134px" src="doc/ng_sa_position.png">
+							</div>
+						</div>
+						<p>
+							Since X and Y coordinates tile with the seamless area, this output can be directly plugged into an image texture:
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table; margin-bottom: 8px;">
+								<img alt="Position texture example." style="display: block; width: 519px; height: 370px" src="doc/seamless_area_position_texture.jpg">
+							</div>
+							<div class="subframe" style="margin: auto; display: table">
+								<img alt="Position texture usage." style="display: block; width: 531px; height: 232px" src="doc/ng_sa_position_texture.png">
+							</div>
+						</div>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 158px; height: 97px">
+								<img alt="Seamless Transform node group." style="display: block; position: absolute; left: -160px; top: -4px" src="doc/ng_seamless_transform.png">
+							</div>
+						</div>
+						<p>
+							<span id="node-groups-seamless-transform" class="label">Seamless Transform:</span> Used by the seamless area node group to transform global coordinates to seamless coordinates. The internals of this node group are updated automatically with changes in seamless area dimensions, but may require a manual refresh when the seamless area is moved or rotated.
+						</p>
+						<p>
+							The following reproduces the position output of the seamless area node group by transforming the position output of the geometry node:
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table">
+								<img alt="Seamless Transform usage." style="display: block; width: 323px; height: 108px" src="doc/ng_seamless_transform.png">
+							</div>
+						</div>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 137px; height: 94px">
+								<img alt="Fast Noise node group." style="display: block; position: absolute; left: -195px; top: -13px" src="doc/ng_fast_noise.png">
+							</div>
+						</div>
+						<p>
+							<span id="node-groups-fast-noise" class="label">Fast Noise:</span> Pseudo random noise function that takes a 3D coordinate and returns a value between 0.0 and 1.0. This is useful for turning constants, such as object location, into random values.
+						</p>
+						<p class="warn">
+							<b>Warning:</b> Output of this node group will most likely differ between CPU, GPU, and other hardware/software floating point implementations. NOT recommended if the intention is to combine rendered results from different machines or hardware.
+						</p>
+						<div class="imggroup">
+							<img alt="Fast Noise example." style="display: block; width: 428px; height: 206px; margin: auto;" src="doc/fast_noise.png">
+							<div class="subframe" style="margin: auto; display: table">
+								<img alt="Fast Noise usage." style="display: block; width: 514px; height: 129px" src="doc/ng_fast_noise.png">
+							</div>
+						</div>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 137px; height: 94px">
+								<img alt="Round Vector node group." style="display: block; position: absolute; left: -203px; top: -20px" src="doc/ng_round_vector.png">
+							</div>
+						</div>
+						<p>
+							<span id="node-groups-round-vector" class="label">Round Vector:</span> Rounds components of a vector to nearest integer.
+						</p>
+						<div class="imggroup">
+							<img alt="Round Vector example." style="display: block; width: 428px; height: 206px; margin: auto;" src="doc/round_vector.png">
+							<div class="subframe" style="margin: auto; display: table">
+								<img alt="Round Vector usage." style="display: block; width: 515px; height: 126px" src="doc/ng_round_vector.png">
+							</div>
+						</div>
+					</div>
+					<div style="position: relative">
+						<div class="subframe sflabel labelbox">
+							<div style="position: relative; overflow: hidden; width: 138px; height: 134px">
+								<img alt="Round Vector Ex node group." style="display: block; position: absolute; left: -179px; top: -4px" src="doc/ng_round_vector_ex.png">
+							</div>
+						</div>
+						<p>
+							<span id="node-groups-round-vector-ex" class="label">Round Vector Ex:</span> Scales a vector, then applies an offset, rounds components of the vector to nearest integer, and then reverses the scale on the result. Though this is used by the seamless area node group for approximate object location, its usefulness is quite extensive. The offset is actually set at 0.5 by default which technically makes this a floor vector node instead. Change the offset back to 0.0 for round vector or -0.5 for ceil vector.
+						</p>
+						<p>
+							It can be used on texture coordinates to create a pixelization effect with &quot;pixel size&quot; being controlled by the scale parameter:
+						</p>
+						<div class="imggroup">
+							<div style="position: relative; overflow: hidden; width: 428px; height: 206px; margin: auto">
+								<img alt="Round Vector Ex example." style="display: block; position: absolute; top: 0; left: 0; -moz-animation: round_vector_ex 3s steps(3) infinite; -o-animation: round_vector_ex 3s steps(3) infinite; -webkit-animation: round_vector_ex 3s steps(3) infinite; animation: round_vector_ex 3s steps(3) infinite;" src="doc/round_vector_ex.png">
+							</div>
+							<div class="subframe" style="margin: auto; display: table;">
+								<img alt="Round Vector Ex usage." style="display: block; width: 638px; height: 144px" src="doc/ng_round_vector_ex.png">
+							</div>
+						</div>
+						<p>
+							Though not the intent of this group, it can also be used on colors to create a stepping/posterization effect. Passing HSV generally works better than RGB for posterization effects. You may find use in modifying this group to allow independent scaling for each axis and creating a dedicated posterization node group. Below are a few more examples of pixelization and posterization with a simple image:
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table;">
+								<img alt="Round Vector Ex pixel and poster effects example." style="display: block; width: 640px; height: 960px" src="doc/round_vector_ex_pixpost.jpg">
+							</div>
+						</div>
+						<p>
+							Utilizing both effects with a properly transformed grid texture:
+						</p>
+						<div class="imggroup">
+							<div class="subframe" style="margin: auto; display: table;">
+								<img alt="Round Vector Ex for ceramic tile wall of image." style="display: block; width: 640px; height: 320px" src="doc/round_vector_ex_tiles.jpg">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="subsec">
+				<h2 id="add-on-preferences">Add-on Preferences<span>User Preferences > Add-on Manager > Object Category > Piles'N'Tiles</span></h2>
+				<p>
+					The colors of the seamless area, margin, floor, and proxy location points can be changed here. This also contains a link to this documentation as well as an option to toggle the help panel in the seamless tab of the tool shelf.
+				</p>
+				<div style="display: table; margin: auto;">
+					<img class="subframe" alt="Add-on Preferences" style="display: block; width: 576px; height: 134px" src="doc/uperf.png">
+				</div>
+			</div>
+		</div>
+		<div class="frame" style="margin-bottom: 1024px">
+			<h1 id="release-notes">Release Notes</h1>
+			<h2 id="v-0-1">Version 0.1<span>Blender 2.74</span></h2>
+			<ul style="list-style-position: outside; margin-left: 16px">
+				<li>
+					Initial Release. The basic tools to help manage objects seamlessly for tile-able texture and mesh creation with an emphasis on utilizing rigid bodies for such purposes. Enjoy your Piles'N'Tiles...
+				</li>
+				<li>
+					Created this documentation file to go with this add-on in the hopes that it will be helpful in explaining the tools and settings provided.
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

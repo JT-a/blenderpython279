@@ -1,0 +1,2 @@
+This folder is controled by the addons_utils module
+you can use the provided addons_utils file from the modules and this folder will be available to use.

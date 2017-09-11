@@ -1,0 +1,21 @@
+Changelog:
+----------
+
+V0_5:
+------
+Improved Segmentation of UI to better reflect parents and child layers
+
+Added: Active Layer, Objects created in viewport are now moved to the active layer, instead of the default _Unsorted layer.
+
+v0_41:
+------
+Updated UI to better reflect layer parents/groups
+
+
+v0_4:
+-----
+Early release:
+http://blenderartists.org/forum/showthread.php?332334-Add-on-Scenelayers-(-CAD-ish-layers)-W-I-P&p=2614543#post2614543
+
+
+

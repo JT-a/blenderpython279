@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/bf-extensions/!svn/ver/2620/contrib/py/scripts/addons/game_engine_ragdolls_kit/templates
+END
+brik_init_ragdoll.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svnroot/bf-extensions/!svn/ver/2620/contrib/py/scripts/addons/game_engine_ragdolls_kit/templates/brik_init_ragdoll.py
+END
+brik_spawn.py
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/bf-extensions/!svn/ver/2620/contrib/py/scripts/addons/game_engine_ragdolls_kit/templates/brik_spawn.py
+END
+brik_load.py
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/bf-extensions/!svn/ver/2620/contrib/py/scripts/addons/game_engine_ragdolls_kit/templates/brik_load.py
+END

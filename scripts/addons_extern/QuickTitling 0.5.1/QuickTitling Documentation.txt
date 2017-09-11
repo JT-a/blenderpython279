@@ -1,0 +1,221 @@
+QuickTitling - 
+    Can be found in the sequence editor properties panel.
+    This will create and edit simple scenes for title overlays.
+    A set of pre-made titles are included with the script, they will be placed in the
+    script folder, under a sub directory of 'Presets'.  Each preset has a preview image
+    with the same name as the preset .xml file to assist in selecting the correct preset.
+    A few simple textures are included as well, which some of the presets use.  These
+    will need to be reloaded when a preset is imported, and will be in the 
+    /Presets/Textures directory.
+    Keep in mind that any pre-made titles are intended for use with a 16:9 aspect ratio,
+    vertical positioning of objects may not appear correct in other display ratios.
+    Lowering the scene length below the length of the animations may cause issues.
+    
+Scene Editing - 
+    QuickTitling generates standard blender scenes that can be edited after they are
+    generated.  If you wish to edit the scene, it is recommended to remove 'QuickTitle:'
+    from the scene name, this will prevent QuickTitling from updating the scene and
+    overwriting anything you may have changed, but it will also prevent the usage of
+    the interface to adjust title settings.
+    New objects can be added and scene or render settings can be changed without issues.
+    If you wish to change a material, any settings not covered by the QuickTitling
+    interface should be able to be changed without reverting.  Extra textures can
+    be added to objects, just for an image type make sure they are using texture slots
+    other than the first two.  
+    If you wish to edit an object, it is recommended to rename it, this will prevent
+    QuickTitling from finding the object.  After you rename it, delete it from the
+    object list or it will be re-created on the next update.
+    
+Dialog - 
+    When a created QuickTitle is selected, the settings can be adjusted and will
+        be shown in real-time.  It is recommended to enable OpenGL preview in the
+        sequencer preview area to keep editing quick.
+   
+    To start with, only two options are available: New Title Preset, and Import.
+        New Title Preset - Create a new blank scene for editing.
+        Import - Import a title preset from a .xml file.
+    
+    Once a preset is created, the preset editor is displayed:
+        Create New Title - Create a new title scene using the preset.
+        Auto-Update Titles - When enabled, if a title is selected,
+            changed settings will automatically update the title.  This is not
+            valid for preset creation mode.
+    
+        Select Preset Area:
+            New and Import buttons can be used to add new presets to the list.
+            The drop-down menu will allow selecting a preset for editing or to 
+                create a new title with.
+            Copy will duplicate the current preset.  Make sure to rename afterwards.
+            Export will save the current preset to a .xml file.
+    
+    Create or select a preset to change this editor area:
+        Update Title - When Auto-Update is not enabled, this can be used to manually
+            update all of a title's settings.
+        Render To Image - This will create a .png image of the title with the current
+            settings.  This can be used once a title is finalized to speed up the
+            final render process.  Any changes made to the title will not auto-update
+            the image!  Note that this is a static image and any animations will not
+            be shown.
+        The preset area will only show the name for the current title scene settings.
+        The Export button will now save a preview .jpg image of the title as well as
+            the .xml settings file.
+        Copy Preset Back To Scene - Copy the QuickTitle settings back to the presets
+            of the main scene.  Any presets with the same name will be overwritten,
+            if no presets with the same name exist, one will be created.
+    
+    Global Preset Settings:
+        Preset Name - Give this preset a unique name.
+        Description - A text field to describe this preset.
+        Scene Length - Length of this title preset in frames.
+        Z Depth Scale - Determines the depth distance between objects in the title.
+            This affects shadows as well.  A value of 0 will result in all objects
+            placed on the same plane.
+        Objects List - A list of the objects in the current QuickTitle preset.
+            Order in the list determines which objects will be placed above each
+            other.  Objects at the top of the list will be above objects at
+            the bottom.  Use the arrows to the right to rearrange objects for layering.
+        Add - Use these buttons to add objects of the basic types.
+        
+    Object Types:
+        All objects have position, rotation, scale, shearing and material settings that
+            can be changed.
+        Text - A text object.  Thickness, displayed text and font can be changed for
+            this object type.
+        Image - A still image or video.  A texture and a transparent texture can be added
+            to this object type.
+        Box - A basic square or rectangle.  A thickness can be added to this object.
+        Circle - A basic circle or oval.  A thickness can be added to this object.
+
+    Object Settings:
+        Depending on the object type, these settings can vary.
+        Object Name - Identifier to help spot this in the object list.
+        
+        Text Options:
+            These settings will only be visible when a text type object is selected.
+            Text - The text to be displayed by this object.
+            Font Dropdown - Select a loaded font from the list, or press the '+' button
+                to load a new font.  After being loaded, this font will be selectable by
+                other text objects.
+            Wrapping - Enable this to limit the horizontal size of the text area so long
+                lines do not go off screen.  Note that wrapping will behave differently
+                depending on which text justification mode is selected.
+            Width - Wrapping width.  The actual size varies based on object scale.  
+                At a scale of 1, 1 is the standard screen width, .5 is half width, 
+                minimum setting will result in one word per line.
+            Text Justification Select - Select how the text will be wrapped from 
+                line-to-line, and where the text will be placed in relation to the
+                text object's center point.
+                Left will result in the text's start point always being in the same location
+                Center will result in the text's center always being in the same location
+                Right will result in the text's right side always being in the same location
+                Justify will attempt to make the text fit the textbox width by increasing the
+                    distance between words.
+                Flush will attempt to make the text fit the textbox width by increasing the
+                    distance between letters.
+            
+        General Options:
+            Pos - Position of this object in 3d space.
+                X is the horizontal location - 0 is centered, -1 is the left side of the
+                    screen, 1 is the right side of the screen.
+                Y is the vertical location - 0 is centered.  Top and bottom values vary 
+                    depending on the aspect ratio of the image.  For standard 16:9 ratio
+                    0.56 is the top of the screen, -0.56 will be the bottom.
+                Z is the 3d location offset - This is not a true location value, but it is 
+                    relative based on this object's location in the object list.  Increasing
+                    this value over the Z Depth Scale amount can result in this object moving
+                    above other objects.
+            Rot - Rotation of this object in 3d space.
+                These values are in degrees. Be careful rotating an object too far on the 
+                    x or y axis as it may intersect with other objects.
+                X will control the forward and back tilt of this object.
+                Y will control the left and right wobble of this object.  
+                Z will control the spin of this object relative to the view.
+            Shearing - This setting will skew this object forward or backwards.  Use on text
+                to give it an italic effect, use on box types to create a rhombus shape.
+                Use on image types to warp the image.
+            Scale - Overall size of this object.  1 is the default, .5 will result in half-size,
+                2 will result in double-size.
+            Width and Height - Just like the scale multiplier, but will only affect one direction.
+        
+        Thickness Options:
+            These settings are only visible when text, box or circle objects are selected.
+            Amount - How much thickness or extrusion is added to this object.
+            Bevel - Adds a cut edge to this object, giving it a more 3d look.  This value and
+                the Amount must not total more than the Z Depth Scale or this object may 
+                intersect other objects
+            Resolution - Determines the number of subdivisions applied to the bevel edge.  
+                Higher values will result in a more rounded edge, but may increase render times.
+            
+        Material Settings:
+            Set Material - When this is enabled, the material of this object can be selected
+                 from a list of materials in the .blend file.  This can be useful for setting
+                 multiple objects to the same color or adding special effects like mirror that
+                 are not covered in the settings.
+            Use No Shading - Make this object a flat color with no shading or specularity.
+                Image objects have this set on by default.
+            Cast Shadows - Allows this object to cast shadows on objects behind it.  Note that
+                even when shadows are disabled on this object, they still will show in the 
+                preview window if it is set to OpenGL preview mode, but the final render will
+                look correct.
+            Material Color - Click this to set the overall color of this material.
+            Specular - Set the amount of specularity or shininess for this material.
+            Hardness - Change the size of the specular reflection for this material.  Higher
+                values result in a sharper and smaller shininess.
+            Specular Color - Click this to set the specular color.  Darker colors will reduce
+                the amount of specularity.
+            Transparency - Enable to allow this object to be partially transparent.
+            Alpha - Controls the amount of transparency - 1 is no transparency, 0 is fully transparent.
+            
+            For an image type object, the following values are also available:
+            Texture - The path to an image or video that will change the coloring of this object.
+                If this texture has transparency information encoded in it, enabling transparency
+                above will show those areas as transparent.
+            Alpha Texture - The path to an image or video that will define transparent areas of this
+                object.  White areas will be opaque, black areas will be transparent gray or colored
+                areas will be partially transparency depending on their brightness. Note that 
+                loading an alpha texture will automatically enable transparency above, and the 
+                transparency from this texture will only be visible while that setting is active.
+            
+        Animations:
+            All objects can be animated individually, and in multiple ways.
+                Only one animation of each type is allowed on each object, for instance,
+                only one X Slide can be added, adding another will overwrite the X Slide settings.
+            Add Animation Menu - Select an animation preset to be added from the list.
+            Apply To All Objects - Apply all the animations and settings added to this object
+                to all other objects in the title.
+            Animations List - A list of each animation added to this object.  Click the 'X' to
+                remove the animation, or select it to change the settings below.
+            Animate In - Enables animating this value at the beginning of the title.
+            Animate Out - Enables animating this value at the end of the title.
+            In Length - Length in frames the starting animation will be.
+            Out Length - Length in frames the ending animation will be.
+            In Frame Offset - Delay the starting animation by a number of frames.  0 will result 
+                in the animation starting at the beginning of the title, positive numbers will
+                delay the animation, negative numbers will cause the animation to start before the
+                title is displayed.
+            Out Frame Offset - Delay the ending animation by a number of frames.  Negative numbers
+                will result in the animation starting earlier, positive numbers will delay the
+                animation past the end of the title.
+            In Amount - Starting value that this animation will be given.  Setting this to 0 for
+                an alpha animation will result in it starting as invisible and changing to the 
+                current alpha setting.  Setting this to -90 for a rotation animation will result 
+                in the object starting rotated 90 degrees left, and ending at the set rotation.
+            Out Amount - Same as In Amount, but sets the value at the end of the out animation.
+        
+    Title Shadows:
+        Shadow Amount - Sets the overall opacity of the shadows.  1 is full shadows, 0 is no shadows.
+        Distance - Sets the 3d position of the shadow casting lamp.  Higher values result in shadows
+            closer to the casting object, lower values will cause the shadows to be further from the
+            casting object.  Setting this too low or high may cause the shadows to disappear.
+        Soft - Controls the amount of blurring applied to the shadows.  Higher values result in
+            softer shadows, but will increase render times.  Setting this to 0 will result in
+            completely sharp shadows.
+        X Offset - Controls the horizontal position of the shadow casting lamp.  Setting this too
+            high may result in the shadows disappearing.
+        Y Offset - Controls the vertical position of the shadow casting lamp.  Setting this too
+            high may result in the shadows disappearing.
+        High Quality Shadows - Sets the shadow rendering to ray traced mode.  This results in
+            much more accurate and nice looking shadows, but render times will be greatly increased.
+    
+    
+    

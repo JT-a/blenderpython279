@@ -1,0 +1,32 @@
+Automatic install
+-----------------
+
+You can install a phyton script or zip file as well:
+
+> run blender
+
+> go to > file > blender user preferences [CTRL+ALT+U]
+
+> go to > tab addons and press "Install from File..." at the bottom
+
+> activate the addon 
+
+> to have it on each blender start, press "Save User Setting" at the bottom
+
+
+Manuall install  
+--------------
+
+> copy and paste or unzip the file into the AppData addons folder:
+
+C:\Users\..."Your_PC_Name"...\AppData\Roaming\Blender Foundation\Blender\2.77\scripts\addons
+
+> run blender 
+
+> go to > file > blender user preferences [CTRL+ALT+U]
+
+> use the search filed or/and choose catergory: User
+
+> activate the addons you have installed 
+
+> to have it on each blender start, press "Save User Setting" at the bottom

@@ -1,0 +1,488 @@
+ ##### BEGIN GPL LICENSE BLOCK #####
+#
+#  This program is free software you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program if not, write to the Free Software Foundation,
+#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+# ##### END GPL LICENSE BLOCK #####
+
+
+"""
+変換方法 http://kuroneko0208.hatenablog.com/entry/2013/02/17/025452
+% pyuic5 input.ui -o output.py
+
+ui読み込み http://log.noiretaya.com/259
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    # Ui Loader
+    loader = QtUiTools.QUiLoader()
+    # Ui ファイルを読み込んでオブジェクトを取得
+    ui = loader.load(os.path.dirname(os.path.abspath(sys.argv[0])) + "/Ui.ui")
+    # 表示
+    ui.show()
+    # 各ウィジェットなどは、デザイナーで設定した名前でアクセスできる
+    ui.exit_action.triggered.connect(app.quit)
+
+    sys.exit(app.exec_())
+"""
+
+
+bl_info = {
+    'name': 'Floating Window',
+    'author': 'chromoly',
+    'version': (0, 2),
+    'blender': (2, 77, 0),
+    'location': 'View3D',
+    'description': '',
+    'warning': '',
+    'wiki_url': '',
+    'tracker_url': '',
+    'category': '3D View',
+}
+
+
+import importlib
+import threading
+import queue
+import time
+import sys
+import multiprocessing
+
+from PyQt5 import QtGui, QtWidgets, QtCore
+from PyQt5.QtWidgets import QAction, qApp, QApplication
+from PyQt5.QtGui import QIcon
+
+import bpy
+
+try:
+    importlib.reload(utils)
+except NameError:
+    pass
+from .utils import AddonPreferences, SpaceProperty, AddonKeyMapUtility
+
+
+class FloatingWindowPreferences(
+        AddonKeyMapUtility,
+        AddonPreferences,
+        bpy.types.PropertyGroup if '.' in __name__ else
+        bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+    def draw(self, context):
+        layout = self.layout
+        super().draw(context, layout.column())
+
+
+EPS = 0.005
+
+TIMER_STEP = 0.01
+QT_TIMER_STEP = 0.05
+bl_queue = queue.Queue()
+qt_queue = queue.Queue()
+qt_lock = threading.Lock()
+
+bl_queue_mp = multiprocessing.Queue()
+qt_queue_mp = multiprocessing.Queue()
+qt_lock_mp = multiprocessing.Lock()
+
+condition = threading.Condition()
+
+
+def qt_window(use_multiprocessing=False):
+    """
+    PyQt4 のメインウィンドウの構成を把握する: http://t2y.hatenablog.jp/entry/20100917/1284652234
+    http://stackoverflow.com/questions/22234671/pyqt-how-to-stick-a-widget-to-the-bottom-edge-of-dialog
+    レイアウトのお話: http://vivi.dyndns.org/vivi/docs/Qt/layout.html
+
+    """
+    class Window(QtWidgets.QMainWindow):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.init_ui()
+            self.mco_press = None
+
+        def init_ui(self):
+            # QtGui.QImage('blender.png')
+            icon = QIcon('/home/sui/blender/scripts/addons/ctools/floating_window/blender.png')
+
+            # exitAction = QAction(QIcon('blender.png'), '&Exit', self)
+            exitAction = QAction(icon, '&Exit', self)
+            exitAction.setShortcut('Ctrl+Q')
+            exitAction.setStatusTip('Exit application')
+            # exitAction.triggered.connect(qApp.quit)
+            exitAction.triggered.connect(self.close)
+
+            statusbar = self.statusBar()
+            statusbar.showMessage('Ready')
+
+            menubar = self.menuBar()
+            fileMenu = menubar.addMenu('&File')
+            fileMenu.addAction(exitAction)
+
+            self.toolbar = self.addToolBar('Exit')
+            self.toolbar.addAction(exitAction)
+
+            timer = QtCore.QTimer(self)
+            timer.timeout.connect(self.timer_event)
+            timer.start(int(QT_TIMER_STEP * 1000))
+
+            widget = QtWidgets.QWidget(self)
+            layout = QtWidgets.QVBoxLayout(widget)
+            widget.setLayout(layout)
+
+            self.label = QtWidgets.QLabel(self)
+
+            layout.addWidget(self.label)
+            layout.addStretch()
+
+            self.setCentralWidget(widget)  # self.centralWidget()で取得可
+
+            # self.setGeometry(300, 300, 300, 200)
+            width = 300
+            height = 200
+            p = QtGui.QCursor().pos()
+            # p2 = self.mapFromGlobal(p)
+            # self.setGeometry(p.x() - width / 2, p.y() - height / 2,
+            #                  width, height)
+
+            # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+            # self.setWindowFlags(
+            #     QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint | QtCore.Qt.CustomizeWindowHint)
+            self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint)
+            # self.setWindowTitle('QT Test')
+            self.setWindowTitle('Hello World')
+
+            # # 透明度
+            # if 1:
+            #     palette = QtGui.QPalette()
+            #     palette.setColor(QtGui.QPalette.Background,
+            #                      QtGui.QColor(0, 0, 0, 0))
+            #     palette.setColor(QtGui.QPalette.Foreground,
+            #                      QtGui.QColor(255, 255, 255, 255))
+            # else:
+            #     palette = self.palette()
+            #     role = self.backgroundRole()
+            #     palette.setColor(role, QtGui.QColor(0, 0, 0, 0))
+            #     role = self.foregroundRole()
+            #     palette.setColor(role, QtGui.QColor(255, 255, 0, 255))
+            # self.setPalette(palette)
+            # # self.setAutoFillBackground(True)
+            # self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+            #
+            # menu = self.menuWidget()
+            # menu.setPalette(palette)
+            # # menu.setAutoFillBackground(True)
+            # menu.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+            # # menu.setStylesheet("QWidget{background-color: rgba(200,100,100,100)}")
+
+            self.show()
+
+        def eventFilter(self, obj, event):
+            # if event.type() == QtCore.QEvent.WindowDeactivate:
+            #     print('WindowDeactivate', event, type(event), event.type())
+            #     self.close()
+            #     return True
+            #     # self.setTopLevelWindow()
+            #     # return True
+            # if event.type() == QtCore.QEvent.MouseMove:
+            #     return True
+            return False
+
+        def keyPressEvent(self, event):
+            if event.key() == QtCore.Qt.Key_Escape:
+                self.close()
+
+        def mousePressEvent(self, event):
+            # print(QtCore.Qt.LeftButton & event.buttons())
+            if event.button() == QtCore.Qt.LeftButton:
+                self.mco_press = event.pos()
+
+        def mouseReleaseEvent(self, event):
+            self.mco_press = None
+
+        def mouseMoveEvent(self, event):
+            if self.mco_press:
+                self.move(event.globalPos() - self.mco_press)
+
+        def timer_event(self):
+            try:
+                q = bl_queue_mp if use_multiprocessing else bl_queue
+                while True:
+                    item = q.get_nowait()
+                    if item is None:
+                        self.close()
+                        break
+                    self.label.setText('Active: ' + str(item))
+                    self.label.adjustSize()
+            except queue.Empty:
+                return
+
+        def closeEvent(self, event):
+            q = qt_queue_mp if use_multiprocessing else qt_queue
+            q.put(None)
+
+    win = Window()
+    win.show()
+    return win
+
+
+class QTWindowBase:
+    def __init__(self):
+        self.prev_time = 0.0
+        self.data = {}
+        self.process = None
+        self.timer = None
+        self.app = self.win = self.event_loop = None
+
+    def init_queue(self):
+        global bl_queue, qt_queue, bl_queue_mp, qt_queue_mp
+        bl_queue = multiprocessing.Queue()
+        qt_queue = multiprocessing.Queue()
+        bl_queue_mp = multiprocessing.Queue()
+        qt_queue_mp = multiprocessing.Queue()
+
+    def timer_add(self, context):
+        wm = context.window_manager
+        self.timer = wm.event_timer_add(TIMER_STEP, context.window)
+
+    def timer_remove(self, context):
+        wm = context.window_manager
+        wm.event_timer_remove(self.timer)
+        self.timer = None
+
+
+class QTWindow(QTWindowBase, bpy.types.Operator):
+    bl_idname = 'wm.qt_window'
+    bl_label = 'QT Test'
+
+    bl_options = {'REGISTER'}
+
+    def cancel(self, context):
+        print('cancel')
+        self.timer_remove(context)
+        bl_queue.put(None)
+        # self.app.quit()
+        # self.event_loop.quit()
+        # del self.app
+        # del self.event_loop
+
+    def modal(self, context, event):
+        t = time.perf_counter()
+        if event.type != 'TIMER' or t - self.prev_time + EPS < TIMER_STEP:
+            return {'PASS_THROUGH'}
+
+        self.prev_time = t
+
+        self.event_loop.processEvents()
+        # self.app.sendPostedEvents(None, 0)
+
+        actob = context.active_object
+        name = actob.name if actob else ''
+        if name != self.data.get('name'):
+            bl_queue.put(name)
+            self.data['name'] = name
+
+        try:
+            while True:
+                item = qt_queue.get_nowait()
+                if item is None:
+                    self.cancel(context)
+                    return {'CANCELLED'}
+        except queue.Empty:
+            return {'PASS_THROUGH'}
+
+        return {'PASS_THROUGH'}
+
+    def invoke(self, context, event):
+        """
+        :param context: bpy.types.Context
+        :param event: bpy.types.Event
+        """
+
+        wm = context.window_manager
+        wm.modal_handler_add(self)
+        self.timer_add(context)
+        self.prev_time = time.perf_counter()
+
+        self.init_queue()
+        app = QApplication.instance()
+        if not app:
+            app = QApplication(['blender'])
+        self.app = app
+
+        self.win = qt_window()
+        self.event_loop = QtCore.QEventLoop()
+
+        app.installEventFilter(self.win)
+
+        return {'RUNNING_MODAL'}
+
+
+def qt_app_mp():
+    app = QApplication.instance()
+    if not app:
+        app = QApplication(['blender'])
+    win = qt_window(True)
+    app.installEventFilter(win)
+    app.exec()
+
+
+class QTWindowMP(QTWindowBase, bpy.types.Operator):
+    bl_idname = 'wm.qt_window_mp'
+    bl_label = 'QT Test MP'
+
+    bl_options = {'REGISTER'}
+
+    def cancel(self, context):
+        self.timer_remove(context)
+        bl_queue_mp.put(None)
+        self.process.join()
+        self.process = None
+
+    def modal(self, context, event):
+        t = time.perf_counter()
+        if event.type != 'TIMER' or t - self.prev_time + EPS < TIMER_STEP:
+            return {'PASS_THROUGH'}
+
+        self.prev_time = t
+
+        actob = context.active_object
+        name = actob.name if actob else ''
+        if name != self.data.get('name'):
+            bl_queue_mp.put(name)
+            self.data['name'] = name
+
+        try:
+            while True:
+                item = qt_queue_mp.get_nowait()
+                if item is None:
+                    self.cancel(context)
+                    return {'CANCELLED'}
+        except queue.Empty:
+            return {'PASS_THROUGH'}
+
+        return {'PASS_THROUGH'}
+
+    def invoke(self, context, event):
+        """
+        :param context: bpy.types.Context
+        :param event: bpy.types.Event
+        """
+
+        wm = context.window_manager
+        wm.modal_handler_add(self)
+        self.timer_add(context)
+        self.prev_time = time.perf_counter()
+
+        self.init_queue()
+        self.process = multiprocessing.Process(target=qt_app_mp)
+        self.process.daemon = True
+        self.process.start()
+
+        return {'RUNNING_MODAL'}
+
+
+classes = [
+    FloatingWindowPreferences,
+    QTWindow,
+    QTWindowMP,
+]
+
+addon_keymaps = []
+
+
+def register():
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
+    wm = bpy.context.window_manager
+    kc = wm.keyconfigs.addon
+    if kc:
+        addon_prefs = FloatingWindowPreferences.get_instance()
+        """:type: FloatingWindowPreferences"""
+        # km = addon_prefs.get_keymap('Screen Editing')
+        # kmi = km.keymap_items.new('view3d.quadview_move', 'LEFTMOUSE', 'PRESS',
+        #                           head=True)
+        # addon_keymaps.append((km, kmi))
+        addon_prefs.register_keymap_items(addon_keymaps)
+
+
+def unregister():
+    addon_prefs = FloatingWindowPreferences.get_instance()
+    """:type: FloatingWindowPreferences"""
+    addon_prefs.unregister_keymap_items()
+
+    for cls in classes[::-1]:
+        bpy.utils.unregister_class(cls)
+
+
+if __name__ == '__main__':
+    register()
+
+
+# def top():
+#     """http://stackoverflow.com/questions/1925015/pyqt-always-on-top"""
+#     import sys
+#     # from PyQt4 import QtGui, QtCore
+#     from PySide import QtGui, QtCore
+#
+#     class mymainwindow(QtGui.QMainWindow):
+#         def __init__(self):
+#             # QtGui.QMainWindow.__init__(self, None,
+#             #                            QtCore.Qt.WindowStaysOnTopHint)
+#             super().__init__()
+#
+#             # メニューバー作成
+#             menubar = QtGui.QMenuBar()
+#             # メニュー作成
+#             file_menu = QtGui.QMenu('ファイル', self)
+#             # アクション追加
+#             exit_action = file_menu.addAction('閉じる')
+#             # ショートカットを設定
+#             exit_action.setShortcut('Ctrl+Q')
+#             # 閉じるのアクションが発火したときはアプリを終了するように
+#             exit_action.triggered.connect(QtGui.qApp.quit)
+#             # メニューバーにメニューを追加
+#             menubar.addMenu(file_menu)
+#             # MainWindow にメニューバーを設定
+#             self.setMenuBar(menubar)
+#
+#             self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+#             # self.setWindowFlags(
+#             #     QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.X11BypassWindowManagerHint)
+#
+#     app = QtGui.QApplication(sys.argv)
+#     mywindow = mymainwindow()
+#     mywindow.setWindowTitle("Hello, World!")
+#     mywindow.show()
+#     app.exec_()
+
+
+# def test():
+#     import sys
+#     from PySide import QtGui, QtCore
+#
+#     app = QtGui.QApplication(sys.argv)
+#
+#     win = QtGui.QWidget()
+#
+#     win.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+#     win.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.X11BypassWindowManagerHint)
+#
+#
+#     win.resize(320, 240)
+#     win.setWindowTitle("Hello, World!")
+#     win.show()
+#
+#     # sys.exit(app.exec_())
+#     app.exec_()

@@ -1,0 +1,202 @@
+{
+	"preferences": 
+	{
+		// use tooltips to know what namespaces are avalaible
+		//for example: if the tooltip says "UserPreferencesView.use_quit_dialog" the namespace will be "view".
+		// "view": 
+		// {
+		// 	"use_auto_perspective": true
+		// 	,"smooth_view": 0
+		// 	,"use_quit_dialog": false
+		// },
+		// "system":
+		// {
+		// 	"use_tabs_as_spaces": false
+		// 	,"use_region_overlap": true
+		// }
+	},
+	// panels to destroy
+	"panels": [
+		// "bpy.types.VIEW3D_PT_view3d_name"
+		// ,"bpy.types.OBJECT_PT_delta_transform"
+		// ,"bpy.types.OBJECT_PT_transform"
+		// ,"bpy.types.OBJECT_PT_transform_locks"
+		// ,"bpy.types.VIEW3D_PT_tools_transform"
+		// ,"bpy.types.VIEW3D_PT_tools_object"
+		// ,"bpy.types.VIEW3D_PT_tools_history"
+		// ,"bpy.types.VIEW3D_PT_tools_add_object"
+		// ,"bpy.types.VIEW3D_PT_tools_relations"
+		// ,"bpy.types.VIEW3D_PT_tools_animation"
+		// ,"bpy.types.VIEW3D_PT_tools_rigid_body"
+		// ,"bpy.types.VIEW3D_PT_tools_grease_pencil"
+		// ,"bpy.types.VIEW3D_PT_view3d_motion_tracking"
+		// ,"bpy.types.VIEW3D_PT_tools_add_mesh_edit"
+		// ,"bpy.types.VIEW3D_PT_tools_shading"
+		// ,"bpy.types.VIEW3D_PT_tools_uvs"
+		// ,"bpy.types.VIEW3D_PT_tools_grease_pencil_draw"
+	],
+	//keyboard settings
+	// [command, map, operator, operator properties, shorcut key]
+
+	//command: enum, "key" or "del", sets or remove a key shortcut
+	//mapname: string, keyboard map, same as blender user preferences
+	//operator idname: string, same as blender->user preferences->input
+	//operator properties: dict, operator arguments
+	//key properties: dict, shortcut properties, type, modifiers, etc. 
+
+	// Complete list of avalaible keys at 
+	// http://www.blender.org/api/blender_python_api_2_72b_release/bpy.types.KeyMapItem.html
+
+	"keyboard": [
+
+		// // TIPS, TRICKS AND NEW FUNCTIONALITY
+
+		// // NEW: Toggles quad views, disables lock rotation and restore perspective view
+		// // this allows to change views without the numpad, lightning fast.
+		// // Removed quit Blender shorcut for safety.
+		// ["key", "Screen", "screen.toggle_quadviews", {}, {"type": "Q"}]
+		// , ["del", "Window", "wm.quit_blender", {}, {}]
+		// // NEW: quickly change layout
+		// , ["key", "Window", "wm.call_menu_pie", {"name": "WINDOW_MT_layout_menu"}, {"type": "F5"}]
+		// // moved search menu to shift + A, add objects to spacebar
+		// , ["key", "Window", "wm.search_menu", {}, {"type": "A", "shift": true}]
+		// , ["key", "Object Mode", "wm.call_menu", {"name": "INFO_MT_add"}, {"type": "SPACE"}]
+		// // view selected moved to D, grease pencil to numpad period
+		// , ["key", "Grease Pencil", "gpencil.draw",  {"mode": "DRAW"}, {"map_type": "MOUSE", "key_modifier": "NUMPAD_PERIOD"}]
+		// , ["key", "3D View", "view3d.view_selected", {"use_all_regions": false}, {"type": "D"}]
+		// // cursor to selected and selected to cursor to shift /alt + left click
+		// , ["key","3D View", "view3d.snap_cursor_to_selected", {}, {"type": "ACTIONMOUSE", "shift": true}]
+		// , ["key","3D View", "view3d.snap_selected_to_cursor", {"use_offset": false}, {"type": "ACTIONMOUSE", "alt": true}]
+		// // Switch to Paint mode instead Weight Paint
+		// , ["del", "Object Non-modal", "object.mode_set", {"mode": "WEIGHT_PAINT"}, {}]
+		// , ["key", "Object Non-modal", "object.mode_set",  {"mode": "TEXTURE_PAINT", "toggle": true}, {"type":"TAB", "ctrl":true}]
+		// , ["del", "Outliner", "outliner.show_active", {}, {}]
+		// , ["key", "Outliner", "outliner.show_active", {}, {"type": "D"}]
+		// // NEW: toggles mark seams
+		// , ["key","Mesh", "mesh.smart_mark_seam", {}, {"type": "M"}]
+		// , ["key","Mesh", "wm.call_menu", {"name": "INFO_MT_mesh_add"}, {"type": "SPACE"}]
+		// // Mesh select modes mapped to 1, 2, 3 backslash to occlude geometry
+		// , ["key","Mesh", "wm.context_set_value", {"data_path": "tool_settings.mesh_select_mode", "value":"[True, False, False]"}, {"type": "ONE"}]
+		// , ["key","Mesh", "wm.context_set_value", {"data_path": "tool_settings.mesh_select_mode", "value":"[False, True, False]"}, {"type": "TWO"}]
+		// , ["key","Mesh", "wm.context_set_value", {"data_path": "tool_settings.mesh_select_mode", "value":"[False, False, True]"}, {"type": "THREE"}]
+		// , ["key","Mesh", "wm.context_toggle", {"data_path": "space_data.use_occlude_geometry"}, {"type": "BACK_SLASH"}]
+		// , ["key","Mesh", "wm.context_menu_enum", {"data_path": "tool_settings.snap_element"}, {"type": "TAB", "ctrl": true}]
+		// // sets connected proportional edit as default
+		// , ["key","Mesh", "wm.context_toggle_enum", {"data_path": "tool_settings.proportional_edit", "value_1": "DISABLED", "value_2": "CONNECTED"}, {"type": "O"}]
+		// , ["key","Mesh", "wm.context_toggle_enum", {"data_path": "tool_settings.proportional_edit", "value_1": "DISABLED", "value_2": "ENABLED"}, {"type": "O", "alt": true}]
+		// // show normals 
+		// , ["key","Mesh", "wm.context_toggle", {"data_path": "object.data.show_normal_face"}, {"type": "N", "shift": true}]
+		// // set object's origin on edit mesh
+		// , ["key","Mesh", "mesh.origin_set", {}, {"type": "C", "alt": true}]
+		// // In development, selects rings each 2 edge loops
+		// //, ["key","Mesh", "mesh.select_pair_rings", {}, {"type": "SELECTMOUSE", "ctrl": true, "alt": true}]
+		// , ["key","Curve", "wm.call_menu", {"name": "INFO_MT_edit_curve_add"}, {"type":"SPACE"}]
+		// // Selects curve points between 2 points
+		// , ["key","Curve", "curve.select_path", {}, {"type":"RIGHTMOUSE", "ctrl": true}]
+		// // sets connected proportional edit as default on edit curve mode
+		// , ["key","Curve", "wm.context_toggle_enum", {"data_path": "tool_settings.proportional_edit", "value_1": "DISABLED", "value_2": "CONNECTED"}, {"type": "O"}]
+		// , ["key","Curve", "wm.context_toggle_enum", {"data_path": "tool_settings.proportional_edit", "value_1": "DISABLED", "value_2": "ENABLED"}, {"type": "O", "alt": true}]
+		// , ["key","Node Editor", "wm.call_menu", {"name": "NODE_MT_add"}, {"type": "SPACE"}]
+		// , ["key","Text", "text.comment", {}, {"type": "ONE", "ctrl":true}]
+		// , ["key","Text", "text.uncomment", {}, {"type": "TWO", "ctrl": true}]
+		// , ["key","Text", "wm.context_menu_enum", {"data_path": "space_data.text"}, {"type": "TAB", "ctrl": true}]
+		// , ["key","Image", "image.view_all", {}, {"type": "D"}]
+		// , ["key","Image", "wm.context_toggle_enum", {"data_path": "space_data.mode", "value_1":"VIEW", "value_2":"PAINT"}, {"type": "TAB", "ctrl": true}]
+		// // Overwitten: It opens the image regardless you specified the application at prefs or not.
+		// , ["key","Image", "image.external_edit", {}, {"type": "E", "alt": true}]
+		// // Enable fly navigation on paint mode
+		// , ["key","Image Paint", "view3d.navigate", {}, {"type": "F", "shift": true, "ctrl": true}]
+		// // Stroke Method to S, Grab Color to E
+		// , ["key","Image Paint", "paint.sample_color", {}, {"type": "E"}]
+		// , ["key","Image Paint", "wm.context_menu_enum", {"data_path": "tool_settings.image_paint.brush.stroke_method"}, {"type": "S"}]
+		// // toggles pin uv
+		// , ["key","UV Editor", "uv.smart_pin", {}, {"type": "P"}]
+		// //, ["key","UV Editor", "image.view_selected", {}, {"type": "D"}]
+		// // enable uv selection modes with 1,2,3,4 
+		// , ["key","UV Editor", "uv.smart_select", {"value": "VERTEX"}, {"type": "ONE"}]
+		// , ["key","UV Editor", "uv.smart_select", {"value": "EDGE"}, {"type": "TWO"}]
+		// , ["key","UV Editor", "uv.smart_select", {"value": "FACE"}, {"type": "THREE"}]
+		// , ["key","UV Editor", "uv.smart_select", {"value": "ISLAND"}, {"type": "FOUR"}]
+		// // toggle stretching
+		// , ["key","UV Editor", "wm.context_toggle", {"data_path": "space_data.uv_editor.show_stretch"}, {"type": "FIVE"}]
+		// // toggle sync uv select mode
+		// , ["key","UV Editor", "wm.context_toggle", {"data_path": "tool_settings.use_uv_select_sync"}, {"type": "BACK_SLASH"}]
+		// , ["key","UV Editor", "mesh.smart_mark_seam",{}, {"type": "M"}]
+		// // cursor to selected to shift/alt left click
+		// , ["key","UV Editor", "uv.snap_cursor", {"target":"SELECTED"}, {"type": "ACTIONMOUSE", "shift": true}]
+		// , ["key","UV Editor", "uv.snap_selected", {"target":"CURSOR"}, {"type": "ACTIONMOUSE", "alt": true}]
+		// , ["key","UV Editor", "wm.context_menu_enum", {"data_path": "tool_settings.snap_uv_element"}, {"type":"TAB", "ctrl": true}]
+		// , ["key","UV Editor", "wm.context_menu_enum", {"data_path": "space_data.uv_editor.sticky_select_mode"}, {"type":"TAB", "ctrl": true, "shift": true}]
+		
+		// // // SEQUENCER
+
+		// //Change shift + L/R  to advance x10 frames
+		// , ["key", "Frames", "screen.frame_offset", {"delta": 10}, {"type": "RIGHT_ARROW", "shift": true}]
+		// , ["key", "Frames", "screen.frame_offset", {"delta": -10}, {"type": "LEFT_ARROW", "shift": true}]
+		
+		// //Jump shift + Up/Down to jump start / end 
+		// , ["key","Frames", "screen.smart_frame_jump",{"end": false}, {"type": "DOWN_ARROW", "shift": true}]
+		// , ["key","Frames", "screen.smart_frame_jump",{"end": true}, {"type": "UP_ARROW", "shift": true}]
+
+		// // Add Strips
+		// , ["key","Sequencer", "wm.call_menu",{"name": "SEQUENCER_MT_add"}, {"type": "A", "shift": true}]
+		// // Copy Attributes Menu
+		// , ["key","Sequencer", "wm.call_menu",{"name": "SEQUENCER_MT_copy_attributes"}, {"type": "C", "ctrl": true}]
+
+		// // Toggle Mute and Lock Strip to H and L
+		// , ["key","Sequencer", "wm.context_toggle",{"data_path": "scene.sequence_editor.active_strip.mute"}, {"type": "H"}]
+		// , ["key","Sequencer", "wm.context_toggle",{"data_path": "scene.sequence_editor.active_strip.lock"}, {"type": "L"}]
+		
+		// // Navigate with the keyboard arrows using alt, shift to add to selection
+		// , ["key","Sequencer", "sequencer.navigate",{"direction": "UP"}, {"type": "UP_ARROW", "alt": true}]
+		// , ["key","Sequencer", "sequencer.navigate",{"direction": "DOWN"}, {"type": "DOWN_ARROW", "alt": true}]
+		// , ["key","Sequencer", "sequencer.navigate",{"direction": "LEFT"}, {"type": "LEFT_ARROW", "alt": true}]
+		// , ["key","Sequencer", "sequencer.navigate",{"direction": "RIGHT"}, {"type": "RIGHT_ARROW", "alt": true}]
+
+		// , ["key","Sequencer", "sequencer.navigate",{"direction": "UP", "extend": true}, {"type": "UP_ARROW", "shift": true, "alt": true}]
+		// , ["key","Sequencer", "sequencer.navigate",{"direction": "DOWN", "extend": true}, {"type": "DOWN_ARROW", "shift": true, "alt": true}]
+		// , ["key","Sequencer", "sequencer.navigate",{"direction": "LEFT", "extend": true}, {"type": "LEFT_ARROW", "shift": true, "alt": true}]
+		// , ["key","Sequencer", "sequencer.navigate",{"direction": "RIGHT", "extend": true}, {"type": "RIGHT_ARROW", "shift": true, "alt": true}]
+
+		// // Zoom to selected or view all wheter something is selected or not
+		// , ["key","Sequencer", "screen.smart_view_selected",{}, {"type": "D"}]
+
+		// // Set a strip name with Return
+		// , ["key","Sequencer", "clip.set_property",{}, {"type": "RET"}]
+		// // Move a strip with the keyboard
+		// , ["key","Sequencer", "sequencer.move_clip",{}, {"type": "G"}]
+		// // Snap the clip's tail to the cursor
+		// , ["key","Sequencer", "sequencer.smart_snap",{"back": true}, {"type": "S", "alt": true}]
+		// // Slide the sequence content without moving the strip
+		// , ["key","Sequencer", "sequencer.smart_slip",{}, {"type": "S"}]
+
+		// // Play animation back/forth moved to space bar
+		// , ["key","Sequencer", "screen.animation_play",{}, {"type": "SPACE"}]
+		// , ["key","Sequencer", "screen.animation_play",{"reverse": true}, {"type": "SPACE", "alt": true}]
+
+		// // Trim clip in/out
+		// , ["key","Sequencer", "sequencer.trim",{"reset": false, "trim_out": false}, {"type": "I"}]
+		// , ["key","Sequencer", "sequencer.trim",{"reset": false, "trim_out": true}, {"type": "O"}]
+
+		// // reset trim
+		// , ["key","Sequencer", "sequencer.trim",{"reset": true, "trim_out": false}, {"type": "I", "alt": true}]
+		// , ["key","Sequencer", "sequencer.trim",{"reset": true, "trim_out": true}, {"type": "O", "alt": true}]
+
+		// , ["key","Animation", "anim.previewrange_set", {}, {"map_type": "TWEAK", "type":"EVT_TWEAK_L", "shift": true, "value": "ANY"}]
+		// , ["key","Animation", "anim.previewrange_clear", {}, {"map_type": "MOUSE", "type":"LEFTMOUSE", "shift": true}]
+
+		// , ["key","Timeline", "time.view_all", {}, {"type": "D"}]
+		// , ["key","Dopesheet", "action.view_selected", {}, {"type":"D"}]
+		// , ["key","Graph Editor", "screen.smart_view_selected", {},{"type": "D"}]
+		// , ["key","Graph Editor", "graph.keyframe_insert", {"type":"SEL"},{"type": "I"}]
+		// , ["key","Graph Editor", "wm.context_menu_enum", {"data_path": "space_data.auto_snap"},{"type": "TAB", "shift":true}]
+		// , ["key","Graph Editor", "wm.context_cycle_enum", {"data_path": "space_data.mode"},{"type": "TAB", "ctrl":true}]
+
+	]
+}
+
+
+
+
+
+
